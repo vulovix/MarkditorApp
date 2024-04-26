@@ -6,7 +6,7 @@
   English | <a href="./README.zh-CN.md">简体中文</a>
 </p>
 
-Yet another WYSIWYG Markdown editor written in TypeScript and Tauri. Aims to be an open-source alternative to Typora. 
+Yet another WYSIWYG Markdown editor written in TypeScript and Tauri. Aims to be an open-source alternative to Typora.
 
 > **[Markditor]** = **[Mark]** down + e **[ditor]**.
 > Supports Windows 10 / 11 by now.

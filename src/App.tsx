@@ -14,7 +14,20 @@ import { PlatformAPI } from "@/ipc";
 import { openFile, setRootDir } from "@/store/directory";
 import { initDirectoryOpenListener } from "@/store/preference";
 import { getParentDirectory } from "./utils/path";
+import i18n from "./i18n/i18n";
 
+
+// -------------------------------
+// Custom lifecycle
+// onAppLaunch() -> onAppReady() -> onAppExit()
+// -------------------------------
+
+onAppLaunch()
+
+/**
+ * Execuate once as soon as the app is launched, 
+ * before DOM is ready. May be finished after `onAppReady()`
+ */
 async function onAppLaunch() {
   const pathArg = (await PlatformAPI.os.readCliArgs()).source
   if (pathArg) {
@@ -23,18 +36,31 @@ async function onAppLaunch() {
       setRootDir(getParentDirectory(pathArg))
     }
   }
+
+  i18n.changeLanguage(usePreferenceStore.getState().languageCode)
 }
 
-let unlistenDirOpen: () => void | undefined
 
-// After DOM is ready
+/**
+ * Execute after ReactDOM is ready. 
+ * Used in `useEffect()` inside `<ThemedApp />` componment.
+ */
 async function onAppReady() {
   registerListeners()
 }
 
+/**
+ * Execute after ReactDOM is unmout. 
+ * Used in `useEffect()` inside `<ThemedApp />` componment.
+ */
 function onAppExit() {
   unregisterListeners()
 }
+
+// -------------------------------
+// Global event listeners
+// -------------------------------
+let unlistenDirOpen: () => void | undefined
 
 function registerListeners(): void {
   unlistenDirOpen = initDirectoryOpenListener()
@@ -44,37 +70,9 @@ function unregisterListeners(): void {
   unlistenDirOpen?.()
 }
 
-export function ThemedApp() {
-  // Right after the DOM is ready
-  useEffect(() => {
-    onAppReady()
-    return onAppExit
-  }, [])
-
-  const themeMode = usePreferenceStore((state) => state.themeMode())
-  return (
-    <Theme appearance={themeMode} className={themeMode === "dark" ? "dark" : ""}>
-      <App />
-      <Toaster position="bottom-right"
-        theme={themeMode} closeButton duration={3000} richColors
-        toastOptions={{
-          actionButtonStyle: {
-            background: "transparent",
-            color: "transparent",
-          },
-          cancelButtonStyle: {
-            background: "transparent",
-            color: "transparent",
-          },
-        }}
-      />
-
-      {/* Global Alert Dialogs */}
-      <UnsaveAlertDialog />
-      {/* <ThemePanel /> */}
-    </Theme>
-  )
-}
+// -------------------------------
+// App component & Themed wrapper
+// -------------------------------
 
 const App = () => {
   const showSidePanel = useNavigationStore((state) => state.sidebarExpanded);
@@ -114,5 +112,37 @@ const App = () => {
   )
 };
 
+export function ThemedApp() {
+  // Right after the DOM is ready
+  useEffect(() => {
+    onAppReady()
+    return onAppExit
+  }, [])
 
-onAppLaunch()
+  const themeMode = usePreferenceStore((state) => state.themeMode())
+  return (
+    <Theme appearance={themeMode} className={themeMode === "dark" ? "dark" : ""}>
+      <App />
+      <Toaster position="bottom-right"
+        theme={themeMode} closeButton duration={3000} richColors
+        toastOptions={{
+          actionButtonStyle: {
+            background: "transparent",
+            color: "transparent",
+          },
+          cancelButtonStyle: {
+            background: "transparent",
+            color: "transparent",
+          },
+        }}
+      />
+
+      {/* Global Alert Dialogs */}
+      <UnsaveAlertDialog />
+      {/* <ThemePanel /> */}
+    </Theme>
+  )
+}
+
+
+
