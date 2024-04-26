@@ -1,85 +1,98 @@
 {
-  "cancel": "Cancel",
-  "not_save": "Not save",
-  "save": "Save",
+  "confirm": "确认",
+  "cancel": "取消",
+  "not_save": "不保存",
+  "save": "保存",
   "history": {
-    "clear_confirm_text": "Are you sure to clear history?",
-    "clear_success": "Successfully cleared.",
-    "recent_files": "Recent files",
-    "recent_folders": "Recent folders",
-    "empty_files": "No recent files",
-    "empty_folders": "No recent folders"
+    "clear_confirm_text": "确定要清除历史记录吗？",
+    "clear_success": "已成功清除。",
+    "recent_files": "最近打开的文件",
+    "recent_folders": "最近打开的文件夹",
+    "empty_files": "没有最近打开的文件",
+    "empty_folders": "没有最近打开的文件夹"
   },
   "welcome": {
-    "title1": "Welcome to,",
+    "title1": "欢迎使用，",
     "title2": "🤗Markditor.",
-    "open_file": "Open file...",
-    "open_folder": "Open folder...",
-    "new_markdown": "New Markdown",
-    "clear_history": "Clear history"
+    "open_file": "打开文件...",
+    "open_folder": "打开文件夹...",
+    "new_markdown": "新建Markdown",
+    "clear_history": "清除历史记录"
   },
   "titlebar_dropdown": {
-    "open_file": "Open file...",
-    "open_folder": "Open folder...",
-    "recently_open": "Recently open",
-    "settings": "Settings",
-    "refresh": "Refresh",
-    "clear_history": "Clear history"
+    "open_file": "打开文件...",
+    "open_folder": "打开文件夹...",
+    "recently_open": "最近打开",
+    "settings": "设置",
+    "refresh": "刷新",
+    "clear_history": "清除历史记录"
   },
   "titlebar_menu": {
-    "sidebar": "Sidebar",
-    "new_file": "New file",
-    "save": "Save",
-    "theme_mode": "Theme mode",
-    "more": "More"
+    "sidebar": "侧边栏",
+    "new_file": "新建文件",
+    "save": "保存",
+    "theme_mode": "主题模式",
+    "more": "更多"
   },
   "dir_panel_context_menu": {
-    "open": "Open",
-    "rename": "Rename",
-    "copy": "Copy",
-    "delete": "Delete",
-    "create_file": "Create file",
-    "create_folder": "Create folder",
-    "open_in_finder": "Open in Finder...",
-    "open_in_explorer": "Open in Explorer..."
+    "open": "打开",
+    "rename": "重命名",
+    "copy": "复制",
+    "delete": "删除",
+    "create_file": "创建文件",
+    "create_folder": "创建文件夹",
+    "open_in_finder": "在Finder中打开...",
+    "open_in_explorer": "在资源管理器中打开..."
   },
   "editor": {},
   "create_dialog": {
-    "title_file": "Create file",
-    "title_folder": "Create folder",
-    "desc_file": "Create file under {dir_name}:",
-    "desc_folder": "Create folder under {dir_name}:"
+    "title_file": "创建文件",
+    "title_folder": "创建文件夹",
+    "desc_file": "在 {dir_name} 下创建文件：",
+    "desc_folder": "在 {dir_name} 下创建文件夹："
   },
   "delete_dialog": {
-    "title": "Delete file",
-    "content": "Are you sure you want to delete this file?",
-    "confirm": "Delete",
-    "cancel": "Cancel"
+    "title": "删除文件",
+    "content": "你确定要删除这个文件吗？",
+    "confirm": "删除",
+    "cancel": "取消"
   },
   "rename_dialog": {
-    "title": "Rename file",
-    "input_placeholder": "Input new file name"
+    "title": "重命名文件",
+    "input_placeholder": "输入新的文件名"
   },
+  "unsave_dialog":{
+    "title": "文件未保存",
+    "content": "在继续操作前保存当前文件的修改吗？",
+    "do_nothing":"点错了",
+    "save": "保存",
+    "dont_save": "不保存"
+  },
+
+  
   "settings": {
-    "title": "Settings",
+    "title": "设置",
+    "language": {
+      "title": "语言"
+    },
     "theme_mode": {
-      "title": "Theme mode",
-      "description": "Choose the theme mode",
-      "item_dark": "Dark",
-      "item_light": "Light",
-      "item_system": "System"
+      "title": "主题模式",
+      "description": "选择主题模式",
+      "item_dark": "暗色",
+      "item_light": "亮色",
+      "item_system": "系统"
     },
     "auto_save": {
-      "title": "Auto save",
-      "description": "Auto save the file when the content changes"
+      "title": "自动保存",
+      "description": "内容变化时自动保存文件"
     },
     "auto_save_interval": {
-      "title": "Auto save interval",
-      "description": "Auto save interval in milliseconds. Must greater than 1000."
+      "title": "自动保存间隔",
+      "description": "自动保存的时间间隔，单位为毫秒。必须大于1000。"
     },
     "default_show_toolbar": {
-      "title": "Show toolbar",
-      "description": "Whether show toolbar on the top of the editor."
+      "title": "显示工具栏",
+      "description": "是否在编辑器顶部显示工具栏。"
     }
   }
 }

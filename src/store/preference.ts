@@ -4,6 +4,7 @@ import { editorAction, getVditor } from './editor'
 import useDocumentStore from './document'
 import useDirectoryStore from './directory'
 import { EnvConstants } from '@/utils/constants'
+import i18n from '@/i18n/i18n'
 
 export type PrefThemeMode = "light" | "dark" | "system";
 
@@ -57,6 +58,11 @@ const usePreferenceStore = create(
 const { setState, getState, subscribe } = usePreferenceStore
 
 class PreferenceActions {
+  public setLanguageCode(code: string) {
+    i18n.changeLanguage(code)
+    setState((state) => ({ ...state, languageCode: code }))
+  }
+
   public setThemeMode(prefThemeMode: PrefThemeMode) {
     setState((state) => ({ ...state, prefThemeMode }))
     editorAction.syncTheme()

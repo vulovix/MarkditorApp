@@ -63,6 +63,10 @@
   },
   "settings": {
     "title": "Settings",
+    "bottom_about": "Markditor is open-source.",
+    "language": {
+      "title": "Language"
+    },
     "theme_mode": {
       "title": "Theme mode",
       "description": "Choose the theme mode",

@@ -1,17 +1,13 @@
 import { ReactNode, useState } from 'react';
-import { Dialog, Button, DialogContent, DialogDescription, DialogTitle, Kbd, TextField, Flex, DropdownMenu, Select, Link, Separator, Switch, TextFieldInput, ScrollArea } from "@radix-ui/themes";
+import { Dialog, Button, DialogContent, DialogDescription, DialogTitle, Kbd, TextField, Flex, DropdownMenu, Select, Link, Separator, Switch, TextFieldInput, ScrollArea, Box } from "@radix-ui/themes";
 import { PlatformAPI } from '@/ipc';
 import { cn } from '@/utils/styles';
 import usePreferenceStore, { PrefThemeMode, prefActions } from '@/store/preference';
 import { useTranslation } from 'react-i18next';
+import { SettingItem } from './SettingItem';
+import { SelectLanguage } from './SelectLanguage';
 
-type SettingItemProps = {
-  className?: string,
-  title: string,
-  subtitle: string,
-  trailing: ReactNode,
-  disabled?: boolean,
-}
+
 
 function openUrl(url: string) {
   PlatformAPI.openInBrowser(url)
@@ -21,24 +17,17 @@ function openUrl(url: string) {
 //   PlatformAPI.os.setAsDefaultOpenApp()
 // }
 
-const SettingItem = ({ className, title, subtitle, trailing, disabled }: SettingItemProps) => {
-  return (
-    <Flex justify={"between"} align={"center"}
-      className={cn(className, "select-none", disabled ? "opacity-50" : "")}>
-      <Flex direction={"column"} gap={"1"}>
-        <div className=''>{title}</div>
-        {subtitle.length > 0 && <div className='text-xs opacity-50'>{subtitle}</div>}
-      </Flex>
-      {trailing}
-    </Flex>
-  )
-}
+
 
 const AboutApp = () => {
+  const { t } = useTranslation()
   return (
-    <DialogDescription className='flex gap-2 opacity-75 text-xs'>
-      <span><b>Markditor</b> is open-source on <Link onClick={() => openUrl("https://github.com/greyovo/MarkditorApp")}>Github</Link>.</span>
-      <span>© 2024 <Link onClick={() => openUrl("https://github.com/greyovo")}>@greyovo</Link></span>
+    <DialogDescription className='flex gap-2 items-center opacity-75 text-xs'>
+      <span>
+        {t("settings.bottom_about")} © 2024 <Link onClick={() => openUrl("https://github.com/greyovo")}>@greyovo</Link>.
+      </span>
+      <span>|</span>
+      <Link onClick={() => openUrl("https://github.com/greyovo/MarkditorApp")}>Github</Link>
     </DialogDescription>
   )
 }
@@ -64,8 +53,13 @@ export const SettingDialog = ({ show, onOpenChange }: { show: boolean, onOpenCha
 
         <DialogTitle>{t("settings.title")}</DialogTitle>
 
-        <ScrollArea className=' h-[55vh] my-5 pr-5'>
+        <ScrollArea className='h-[55vh] my-5 pr-5'>
           <Flex direction={"column"} gap={"4"} className=' overflow-y-auto'>
+            <Box height={"1"} />
+            {/* Select language */}
+            <SelectLanguage />
+
+            {/* Theme mode */}
             <SettingItem title={t("settings.theme_mode.title")} subtitle={t("settings.theme_mode.description")}
               trailing={
                 <Select.Root value={prefThemeMode}
@@ -80,6 +74,7 @@ export const SettingDialog = ({ show, onOpenChange }: { show: boolean, onOpenCha
               }
             />
 
+            {/* Auto save */}
             <SettingItem title={t("settings.auto_save.title")} subtitle={t("settings.auto_save.description")}
               trailing={
                 <Switch checked={autoSave}
@@ -88,6 +83,7 @@ export const SettingDialog = ({ show, onOpenChange }: { show: boolean, onOpenCha
               }
             />
 
+            {/* Auto save interval */}
             <SettingItem className={!autoSave ? 'opacity-45' : ""}
               title={t("settings.auto_save_interval.title")}
               subtitle={t("settings.auto_save_interval.description")}
@@ -102,8 +98,9 @@ export const SettingDialog = ({ show, onOpenChange }: { show: boolean, onOpenCha
               }
             />
 
-            <SettingItem title={t("settings.default_show_toolbar.title")} 
-            subtitle={t("settings.default_show_toolbar.description")}
+            {/* Default show toolbar or not */}
+            <SettingItem title={t("settings.default_show_toolbar.title")}
+              subtitle={t("settings.default_show_toolbar.description")}
               trailing={
                 <Switch checked={defaultShowToolbar}
                   onCheckedChange={(v) => prefActions.toggleDefaultShowToolbar(v)}
