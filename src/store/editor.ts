@@ -8,6 +8,7 @@ import { imagesFilter } from '@shared/file_filters'
 import useDocumentStore from './document'
 import { toast } from 'sonner'
 import { dialogActions } from './dialog'
+import i18n from '@/i18n/i18n'
 
 interface EditorState {
   instance?: Vditor
@@ -125,15 +126,15 @@ export class EditorActions {
       for (const item of clipboardContents) {
         for (const mimeType of item.types) {
           if (mimeType === "image/png") {
-            console.log("粘贴图片");
+            console.log("Paste image");
             // const blob = await item.getType("image/png");
             // pngImage.src = URL.createObjectURL(blob);
           } else if (mimeType === "text/html") {
-            console.log("粘贴html")
+            console.log("Paste html")
             const blob = await item.getType("text/html");
             const blobText = await blob.text();
           } else if (mimeType === "text/plain") {
-            console.log("粘贴文本")
+            console.log("Paste plain text.")
             const blob = await item.getType("text/plain");
             const blobText = await blob.text();
             getVditor()?.insertValue(blobText)
@@ -160,18 +161,16 @@ export class EditorActions {
   }
 
   public insertParagraph = async (position: "up" | "down") => {
-    // TODO 在上方或在下方插入段落
+    // TODO insertParagraph on upper or after
   }
 
   public async insertImage() {
-    // TODO 插入图片
-    const imgDirEntity = (await PlatformAPI.selectFile(imagesFilter))
+    const imgDirEntity = (await PlatformAPI.selectFile(imagesFilter()))
     if (!imgDirEntity) return
     const imgPath = resolveWhitespaceInPath(imgDirEntity.path)
     const baseDir = useDocumentStore.getState().baseDir
     if (imgPath) {
       let imgSrc = imgPath
-      // 转为相对路径
       if (baseDir) {
         imgSrc = convertToRelativePath(imgPath, baseDir)
       }
@@ -181,7 +180,7 @@ export class EditorActions {
   }
 
   public async insertTable() {
-    // TODO 插入表格
+    // TODO insertTable
   }
 
   public handleClickUrl(href: string | null) {
@@ -198,7 +197,8 @@ export class EditorActions {
         }
       })
     } else {
-      toast.warning("暂不支持打开此链接", { description: href, id: "open-link-warning" + href })
+      const title = i18n.t("toast.open_link_warn")
+      toast.warning(title, { description: href, id: "open-link-warning" + href })
     }
   }
 

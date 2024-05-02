@@ -4,7 +4,7 @@ import { join } from 'path';
 export async function getChildrenDirectories(path: string): Promise<DirectoryEntity[]> {
   return new Promise((resolve, reject) => {
     try {
-      const childrenName: string[] = fs.readdirSync(path); // 同步方法调用
+      const childrenName: string[] = fs.readdirSync(path);
       const files: DirectoryEntity[] = []
       const dir: DirectoryEntity[] = []
 

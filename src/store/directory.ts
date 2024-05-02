@@ -56,7 +56,7 @@ export async function selectRootDir() {
     closeCurrentDoc()
     toggleSidebarExpanded(true)
   } else {
-    console.error("selectRootDir:", "打开文件夹失败！");
+    console.error("selectRootDir:", "Failed to open root directory");
   }
 }
 
@@ -108,7 +108,7 @@ export async function openDirectory(path: string) {
     const targetDir = findTargetDirRecursive(rootChildren, path)
 
     if (!targetDir) {
-      console.error("Cannot found dir:", path);
+      console.error("Cannot open dir:", path);
       return
     }
     targetDir.children = dirChildren
@@ -149,7 +149,7 @@ export async function createDirectory(base: DirectoryEntity, name: string): Prom
   let target = base.path + "/" + name
   const exist = await PlatformAPI.exists(target)
   if (exist) {
-    console.error("已存在目录或文件：", target);
+    console.error("Directory or file already exists:", target);
     return false
   }
   const res = await PlatformAPI.createDir(target)
@@ -164,7 +164,7 @@ export async function createFile(base: DirectoryEntity, name: string): Promise<b
   let target = base.path + "/" + name
   const exist = await PlatformAPI.exists(target)
   if (exist) {
-    console.error("已存在目录或文件：", target);
+    console.error("Directory or file already exists:", target);
     return false
   }
   const res = await PlatformAPI.createFile(target)

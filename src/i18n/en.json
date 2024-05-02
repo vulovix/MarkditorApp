@@ -49,7 +49,14 @@
     "title_file": "Create file",
     "title_folder": "Create folder",
     "desc_file": "Create file under {{dir_name}}:",
-    "desc_folder": "Create folder under {{dir_name}}:"
+    "desc_folder": "Create folder under {{dir_name}}:",
+    "fail": {
+      "title": "创建成功: {{target_name}}"
+    },
+    "sucess": {
+      "title": "无法创建: {{finalName}}",
+      "description": "文件已存在或无法访问"
+    }
   },
   "delete_dialog": {
     "title": "Delete file",

@@ -6,6 +6,7 @@ import useDirectoryStore, { selectRootDir } from "@/store/directory";
 import { DirectoryPanelHeader } from "./DirectoryPanelHeader";
 import { DirectoryContextMenu } from "./DirectoryContextMenu";
 import { dialogActions } from "@/store/dialog";
+import { useTranslation } from "react-i18next";
 
 function DirectoryEmptyView() {
 
@@ -13,12 +14,14 @@ function DirectoryEmptyView() {
     dialogActions.showUnsaveAlertIfNeeded({ doNext: selectRootDir })
   }
 
+  const {t} = useTranslation()
+
   return (
     <>
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-gray-400 m-3 select-none">😶 没有文件</p>
+        <p className="text-gray-400 m-3 select-none">{t("dir_panel.empty_files")}</p>
         <Button onClick={willSelectDir}>
-          <FolderOpenIcon width="16" height="16" /> 打开...
+          <FolderOpenIcon width="16" height="16" /> {t("dir_panel.open_btn")}
         </Button>
       </div>
     </>

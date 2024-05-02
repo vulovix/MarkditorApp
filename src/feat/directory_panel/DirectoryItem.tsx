@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { DirectoryContextMenu } from "./DirectoryContextMenu"
 import { cn } from "@/utils/styles"
 import { dialogActions } from "@/store/dialog"
+import { t } from "i18next"
 
 interface DirectoryItemProps {
   entity: DirectoryEntity,
@@ -83,7 +84,7 @@ function FileItem(props: DirectoryItemProps) {
     }
 
     if (!isMarkdownFile(data.path)) {
-      toast.warning("暂不支持打开非 Markdown 文件")
+      toast.warning(t("toast.warn_not_markdown"))
       return
     }
     dialogActions.showUnsaveAlertIfNeeded(

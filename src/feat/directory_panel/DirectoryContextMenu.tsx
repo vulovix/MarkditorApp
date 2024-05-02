@@ -6,6 +6,7 @@ import { RenameDialog } from "./dialogs/RenameDialog";
 import { DeleteDialog } from "./dialogs/DeleteDialog";
 import { PlatformAPI } from "@/ipc";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 type NonRootDirectoryMenuItemsProps = {
   entity: DirectoryEntity;
@@ -25,19 +26,21 @@ function NonRootDirectoryMenuItems({ entity, onRename, onDelete }: NonRootDirect
     if (entity.type === 'file') {
       const destPath = await copyFileInPlace(entity.path)
       if (destPath) {
-        toast.success("复制成功", { description: destPath });
+        toast.success(t("toast.copy_success"), { description: destPath });
       } else {
-        toast.error("复制失败");
+        toast.error(t("toast.copy_fail"));
       }
     }
   }
 
+  const {t} = useTranslation()
+
   return (
     <>
-      <ContextMenu.Item onClick={() => openFile(entity.path)}>打开</ContextMenu.Item>
-      <ContextMenu.Item onClick={onRename}>重命名</ContextMenu.Item>
-      {entity.type === 'file' && <ContextMenu.Item onClick={handleCopy}>创建副本</ContextMenu.Item>}
-      <ContextMenu.Item color="red" onClick={onDelete}>删除</ContextMenu.Item>
+      <ContextMenu.Item onClick={() => openFile(entity.path)}>{t("diranel_context_menu.open")}</ContextMenu.Item>
+      <ContextMenu.Item onClick={onRename}>{t("dir_panel_context_menu.rename")}</ContextMenu.Item>
+      {entity.type === 'file' && <ContextMenu.Item onClick={handleCopy}>{t("diranel_context_menu.copy")}</ContextMenu.Item>}
+      <ContextMenu.Item color="red" onClick={onDelete}>{t("dir_panel_context_menu.delete")}</ContextMenu.Item>
     </>
   )
 }
@@ -50,6 +53,8 @@ export function DirectoryContextMenu({ children, entity }: { children: React.Rea
   const [showRename, setShowRename] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
   const [newItemType, setNewItemType] = useState<"dir" | "file">("dir")
+
+  const { t } = useTranslation()
 
   function handleCreateFile() {
     setNewItemType("file")
@@ -80,12 +85,12 @@ export function DirectoryContextMenu({ children, entity }: { children: React.Rea
           }
           <ContextMenu.Separator />
 
-          <ContextMenu.Item onClick={handleCreateFile}>新建文件</ContextMenu.Item>
-          <ContextMenu.Item onClick={handleCreateDirectory}>新建文件夹</ContextMenu.Item>
+          <ContextMenu.Item onClick={handleCreateFile}>{t("dir_panel_context_menu.create_file")}</ContextMenu.Item>
+          <ContextMenu.Item onClick={handleCreateDirectory}>{t("dir_panel_context_menu.create_folder")}</ContextMenu.Item>
 
           <ContextMenu.Separator />
 
-          <ContextMenu.Item onClick={() => openInSystem(entity)}>在文件管理器显示...</ContextMenu.Item>
+          <ContextMenu.Item onClick={() => openInSystem(entity)}>{t("dir_panel_context_menu.open_in_explorer")}</ContextMenu.Item>
         </ContextMenu.Content>
       </ContextMenu.Root>
 

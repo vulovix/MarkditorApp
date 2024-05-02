@@ -3,6 +3,8 @@
   "cancel": "取消",
   "not_save": "不保存",
   "save": "保存",
+  "type_file": "文件",
+  "type_folder": "文件夹",
   "history": {
     "clear_confirm_text": "确定要清除历史记录吗？",
     "clear_success": "已成功清除。",
@@ -34,6 +36,10 @@
     "theme_mode": "主题模式",
     "more": "更多"
   },
+  "dir_panel": {
+    "empty_files": "😶 没有文件",
+    "open_btn": "打开..."
+  },
   "dir_panel_context_menu": {
     "open": "打开",
     "rename": "重命名",
@@ -48,8 +54,21 @@
   "create_dialog": {
     "title_file": "创建文件",
     "title_folder": "创建文件夹",
-    "desc_file": "在 {dir_name} 下创建文件：",
-    "desc_folder": "在 {dir_name} 下创建文件夹："
+    "desc_file": "在 {{dir_name}} 下创建文件：",
+    "desc_folder": "在 {{dir_name}} 下创建文件夹：",
+    "placeholder_file": "请输入文件名",
+    "placeholder_folder": "请输入文件夹名",
+    "invalid_name": {
+      "title": "创建失败",
+      "description": "文件或目录名含有非法字符"
+    },
+    "success": {
+      "title": "创建成功: {{target_name}}"
+    },
+    "fail": {
+      "title": "无法创建: {{target_name}}",
+      "description": "文件已存在或无法访问"
+    }
   },
   "delete_dialog": {
     "title": "删除文件",
@@ -61,15 +80,13 @@
     "title": "重命名文件",
     "input_placeholder": "输入新的文件名"
   },
-  "unsave_dialog":{
+  "unsave_dialog": {
     "title": "文件未保存",
     "content": "在继续操作前保存当前文件的修改吗？",
-    "do_nothing":"点错了",
+    "do_nothing": "点错了",
     "save": "保存",
     "dont_save": "不保存"
   },
-
-  
   "settings": {
     "title": "设置",
     "language": {
@@ -94,5 +111,17 @@
       "title": "显示工具栏",
       "description": "是否在编辑器顶部显示工具栏。"
     }
+  },
+  "file_filter": {
+    "markdown": "Markdown 文件",
+    "image": "图片文件"
+  },
+  "toast": {
+    "open_link_warn": "暂不支持打开此链接",
+    "save_success": "保存成功",
+    "save_fail": "保存失败",
+    "copy_success": "复制成功",
+    "copy_fail": "复制失败",
+    "warn_not_markdown": "暂不支持打开非 Markdown 文件"
   }
 }

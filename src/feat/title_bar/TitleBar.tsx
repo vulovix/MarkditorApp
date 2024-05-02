@@ -30,7 +30,7 @@ export function WindowTitleBar() {
 
   useEffect(() => {
     const unlisten = PlatformAPI.win.onWillClose(willCloseWindow)
-    // FIXME 监听窗口最大化/还原事件
+    // FIXME Listen for window maximize/restore events
     // const removeListener = window.__ElectronAPI__.onMaximizedChanged((v) => {
     //   setMaximized(v)
     // })

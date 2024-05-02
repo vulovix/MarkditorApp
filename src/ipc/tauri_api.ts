@@ -80,7 +80,7 @@ export const TauriAPI: IPlatformAPI = {
     }
   },
 
-  async selectFile(filter: IFileFilter = markdownFilter): Promise<DirectoryEntity | undefined> {
+  async selectFile(filter: IFileFilter = markdownFilter()): Promise<DirectoryEntity | undefined> {
     const selectedPath = await openDialog({
       filters: [filter]
     });

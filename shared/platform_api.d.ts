@@ -31,7 +31,7 @@ export interface IPlatformAPI {
   async listDirectories(path: string): Promise<DirectoryEntity[]>;
 
   // 选择文件（使用对话框）
-  async selectFile(filter: IFileFilter = markdownFilter): Promise<DirectoryEntity | undefined>;
+  async selectFile(filter: IFileFilter = markdownFilter()): Promise<DirectoryEntity | undefined>;
 
   async readFile(path: string): Promise<string | undefined>;
 

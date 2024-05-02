@@ -1,4 +1,9 @@
-import resources from './resources';
+import translation from '../i18n/zh-CN.json';
+
+const resources = {
+  translation,
+} as const;
+
 
 declare module 'i18next' {
   interface CustomTypeOptions {
