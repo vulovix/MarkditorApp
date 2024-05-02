@@ -37,9 +37,9 @@ function NonRootDirectoryMenuItems({ entity, onRename, onDelete }: NonRootDirect
 
   return (
     <>
-      <ContextMenu.Item onClick={() => openFile(entity.path)}>{t("diranel_context_menu.open")}</ContextMenu.Item>
+      <ContextMenu.Item onClick={() => openFile(entity.path)}>{t("dir_panel_context_menu.open")}</ContextMenu.Item>
       <ContextMenu.Item onClick={onRename}>{t("dir_panel_context_menu.rename")}</ContextMenu.Item>
-      {entity.type === 'file' && <ContextMenu.Item onClick={handleCopy}>{t("diranel_context_menu.copy")}</ContextMenu.Item>}
+      {entity.type === 'file' && <ContextMenu.Item onClick={handleCopy}>{t("dir_panel_context_menu.copy")}</ContextMenu.Item>}
       <ContextMenu.Item color="red" onClick={onDelete}>{t("dir_panel_context_menu.delete")}</ContextMenu.Item>
     </>
   )

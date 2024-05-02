@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react';
-import { Dialog, Button, DialogContent, DialogDescription, DialogTitle, Kbd, TextField, Flex, DropdownMenu, Select, Link, Separator, Switch, TextFieldInput, ScrollArea, Box } from "@radix-ui/themes";
+import { Dialog, Button, DialogContent, DialogDescription, DialogTitle, Kbd, TextField, Flex, DropdownMenu, Select, Link, Separator, Switch, TextFieldInput, ScrollArea, Box, Tooltip } from "@radix-ui/themes";
 import { PlatformAPI } from '@/ipc';
 import { cn } from '@/utils/styles';
 import usePreferenceStore, { PrefThemeMode, prefActions } from '@/store/preference';
@@ -23,11 +23,17 @@ const AboutApp = () => {
   const { t } = useTranslation()
   return (
     <DialogDescription className='flex gap-2 items-center opacity-75 text-xs'>
-      <span>
-        {t("settings.bottom_about")} © 2024 <Link onClick={() => openUrl("https://github.com/greyovo")}>@greyovo</Link>.
-      </span>
-      <span>|</span>
-      <Link onClick={() => openUrl("https://github.com/greyovo/MarkditorApp")}>Github</Link>
+      <div>
+        © Made with ❤️ by <Tooltip delayDuration={0} content={"https://github.com/greyovo"}>
+          <Link onClick={() => openUrl("https://github.com/greyovo")}>@greyovo</Link>
+        </Tooltip>.
+      </div>
+      {/* <div>|</div> */}
+      <div>
+        Source: <Tooltip delayDuration={0} content={"https://github.com/greyovo/MarkditorApp"}>
+          <Link onClick={() => openUrl("https://github.com/greyovo/MarkditorApp")}>Github</Link>
+        </Tooltip>
+      </div>
     </DialogDescription>
   )
 }
