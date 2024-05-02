@@ -1,7 +1,9 @@
 import { PlatformAPI } from "@/ipc";
 import useDocumentStore from "@/store/document"
 import { Button, Flex, IconButton, Popover } from "@radix-ui/themes"
+import { t } from "i18next";
 import { CheckCircle2, FolderOpen, LoaderIcon } from "lucide-react"
+import { useTranslation } from "react-i18next";
 
 function openInSystem() {
   const fullPath = useDocumentStore.getState().path;
@@ -11,8 +13,8 @@ function openInSystem() {
 }
 
 function DocInfoPopover({ children }: { children: React.ReactNode }) {
-  const fileName = useDocumentStore((state) => state.fileName ?? "<无标题>")
-  const path = useDocumentStore((state) => state.path ?? "<未保存>")
+  const fileName = useDocumentStore((state) => state.fileName ?? t("doc_info.untitled_file"))
+  const path = useDocumentStore((state) => state.path ?? t("doc_info.unknown_path"))
   const content = useDocumentStore((state) => state.content ?? "")
 
   let lineCount = 0
@@ -21,6 +23,7 @@ function DocInfoPopover({ children }: { children: React.ReactNode }) {
       lineCount++
   }
 
+  const { t } = useTranslation()
 
   return (
     <Popover.Root>
@@ -36,8 +39,11 @@ function DocInfoPopover({ children }: { children: React.ReactNode }) {
           </Flex>
 
           <Flex justify="between">
-            <div>统计</div>
-            <div>{lineCount} 行 / {content.trim().length} 字符</div>
+            <div>{t("doc_info.statistic")}</div>
+            <div>{t("doc_info.count", {
+              lineCount: lineCount,
+              charCount: content.trim().length,
+            })}</div>
           </Flex>
         </Flex>
       </Popover.Content>
@@ -49,6 +55,8 @@ export function DocInfoRow() {
   const saved = useDocumentStore(state => state.saved)
   const content = useDocumentStore(state => state.content ?? "")
 
+  const { t } = useTranslation()
+
   return (
     <DocInfoPopover>
       <Button variant="ghost"
@@ -56,9 +64,13 @@ export function DocInfoRow() {
         <Flex gap="4" className="items-center text-sm select-none">
           <Flex gap="1" className={(saved ? "opacity-30" : "") + " items-center"}>
             {saved ? <CheckCircle2 strokeWidth={1.5} size={16} /> : <LoaderIcon strokeWidth={1.5} size={16} />}
-            <div>{saved ? "已保存" : "未保存"}</div>
+            <div>{saved ? t("doc_info.saved") : t("doc_info.unsaved")}</div>
           </Flex>
-          <div className="mr-1">{content.trim().length} 字符</div>
+          <div className="mr-1">{t(
+            "doc_info.char_count",
+            { charCount: content.trim().length }
+          )}
+          </div>
         </Flex>
       </Button>
     </DocInfoPopover>

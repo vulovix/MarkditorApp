@@ -13,7 +13,7 @@ export async function handleEditorHotKey(e: KeyboardEvent) {
           const res = await saveDocument()
           if (res) toast.success(t("toast.save_success"), { id: "save-success", duration: 3000 })
         } catch (error) {
-          toast.error("保存失败", { description: `${error}`, duration: 10000 })
+          toast.error(t("toast.save_fail"), { description: `${error}`, duration: 10000 })
           console.error(error);
         }
         break

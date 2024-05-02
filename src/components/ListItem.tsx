@@ -2,7 +2,7 @@ import { ReactNode } from "react"
 
 export interface ListItemProps {
   leading?: ReactNode,
-  leadingSpace?: number, // 用于调整 leading 元素与左侧的间距
+  leadingSpace?: number,
   children: ReactNode,
   trailing?: ReactNode,
   onClick: () => void,

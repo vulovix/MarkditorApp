@@ -108,12 +108,12 @@ export const SettingDialog = ({ show, onOpenChange }: { show: boolean, onOpenCha
               }
             />
 
-            {/* TODO 设置Markditor为默认打开方式 */}
-            {/* <SettingItem title={'设为默认打开方式'}
-              subtitle={'设置 Markditor 为系统 Markdown 文件默认打开方式'}
+            {/* TODO Set Markditor as the default opening method */}
+            {/* <SettingItem title={'title'}
+              subtitle={'Set Markditor as the default opening method'}
               trailing={
                 <Flex justify={"end"} align={"center"} gap={"2"}>
-                  <Button onClick={setAsDefaultApp}>设置默认</Button>
+                  <Button onClick={setAsDefaultApp}>Set default</Button>
                 </Flex>
               }
             /> */}

@@ -3,19 +3,23 @@ import { createNewDoc } from "@/store/document";
 import usePreferenceStore, { prefActions } from "@/store/preference";
 import { getNameFromPath } from "@/utils/path";
 import { Button, Flex, Link, Separator } from "@radix-ui/themes";
+import { t } from "i18next";
 import { FileTextIcon, FolderIcon, PencilIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 function handleClearHistory() {
-  toast("清除所有历史记录？", {
+  toast(t("welcome.clear_history.title"), {
     id: "clear-history",
     position: "top-center",
     action: {
-      label: <Button size={"1"}>确认</Button>,
+      label: <Button size={"1"}>{t("welcome.clear_history.confirm")}</Button>,
       onClick: () => {
         prefActions.clearAllHistory()
-        toast.success("已清除", { id: "clear-history-success" })
+        toast.success(
+          t("welcome.clear_history.success"),
+          { id: "clear-history-success" }
+        )
       }
     },
   })
@@ -41,7 +45,7 @@ const HistoryItems = () => {
   const fileLabel = fileHistory.length === 0 ? t("history.empty_files") : t("history.recent_files")
   const folderLabel = folderHistory.length === 0 ? t("history.empty_folders") : t("history.recent_folders")
 
-  const clearHistoryLabel = t("welcome.clear_history")
+  const clearHistoryLabel = t("welcome.clear_history.button_label")
 
   return (
     <Flex direction={"column"} className="text-sm" gap={"2"} mt={"6"}>

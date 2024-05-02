@@ -60,12 +60,10 @@ i18n
     }
   });
 
-// 在你的 JavaScript 文件或 Tauri 应用的前端逻辑中
 const systemLanguage = navigator.language;
-console.log(systemLanguage); // 输出用户的系统语言，例如 'en-US'
-// i18n.changeLanguage("zh-CN"); // 切换语言为中文
+console.log("System language code:", systemLanguage);
+// i18n.changeLanguage("zh-CN");
 
-// const currentLocale = i18n.language;
-// console.log(currentLocale); // 输出当前的语言代码
+// console.log(i18n.language);
 
 export default i18n;

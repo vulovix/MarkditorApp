@@ -71,8 +71,8 @@ export function DirectoryContextMenu({ children, entity }: { children: React.Rea
       <ContextMenu.Root>
         <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
         <ContextMenu.Content onContextMenu={(e) => e.stopPropagation()}
-          className="w-[11rem] max-w-[15rem]">
-          <div className="line-clamp-1 text-xs text-ellipsis break-all py-1.5 px-3 mb-1 opacity-40 h-6">
+          className="">
+          <div className="line-clamp-1 w-[11rem] max-w-[15rem] text-xs text-ellipsis break-all py-1.5 px-3 mb-1 opacity-40 h-6">
             {entity.name}
           </div>
           {

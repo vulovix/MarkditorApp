@@ -4,13 +4,18 @@ import { useState } from "react";
 import { renameDirectory, renameFile } from "@/store/directory";
 import { toast } from "sonner";
 import { validateDirectoryName, fixMdFileName } from "@/utils/path";
+import { useTranslation } from "react-i18next";
 
 export function RenameDialog({ show, entity, onOpenChange }: DialogProps) {
   const [inputName, setInputName] = useState(entity.name);
+  const { t } = useTranslation()
 
   async function confirm() {
     if (!validateDirectoryName(inputName)) {
-      toast.error("重命名失败", { description: "文件或目录名含有非法字符" });
+      toast.error(
+        t("rename_dialog.invalid_name.title"),
+        { description: t("rename_dialog.invalid_name.description") }
+      );
       onOpenChange(false)
       return
     }
@@ -26,21 +31,32 @@ export function RenameDialog({ show, entity, onOpenChange }: DialogProps) {
     }
 
     if (result) {
-      toast.success("重命名成功", { description: finalName });
+      toast.success(t("rename_dialog.success.title"), { description: finalName });
     } else {
-      toast.error("重命名失败", { description: "文件或目录已存在，或正在被其他程序使用" })
+      toast.error(
+        t("rename_dialog.fail.title"),
+        { description: t("rename_dialog.fail.description") }
+      )
     }
     // clear state
     onOpenChange(false);
     // setReset(true)
   }
 
+  const title = entity.type === "dir" ?
+    t("rename_dialog.title_folder") :
+    t("rename_dialog.title_file")
+
+  const desc = entity.type === "dir" ?
+    t("rename_dialog.desc_folder") :
+    t("rename_dialog.desc_file")
+
   return (
     <Dialog.Root open={show} onOpenChange={onOpenChange}>
       <DialogContent className="w-[400px]">
-        <DialogTitle>重命名</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogDescription>
-          输入新的{entity.type === "dir" ? "文件夹" : "文件"}名：
+          {desc}
           <TextField.Input
             my="2" value={inputName} placeholder={entity.name}
             onInput={(e) => setInputName(e.currentTarget.value)}
@@ -49,8 +65,12 @@ export function RenameDialog({ show, entity, onOpenChange }: DialogProps) {
         </DialogDescription>
 
         <Flex justify={"end"} gap={"2"}>
-          <Button variant="soft" onClick={() => onOpenChange(false)}>取消</Button>
-          <Button onClick={confirm} disabled={inputName.trim().length === 0}>确定</Button>
+          <Button variant="soft" onClick={() => onOpenChange(false)}>
+            {t("rename_dialog.cancel")}
+          </Button>
+          <Button onClick={confirm} disabled={inputName.trim().length === 0}>
+            {t("rename_dialog.confirm")}
+          </Button>
         </Flex>
       </DialogContent>
     </Dialog.Root>

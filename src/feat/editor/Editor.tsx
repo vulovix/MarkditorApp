@@ -8,15 +8,15 @@ import { editorAction, getVditor } from "@/store/editor";
 import { convertImagePath } from "@/utils/path";
 import usePreferenceStore from "@/store/preference";
 import { handleEditorHotKey } from "@/utils/hotkeys";
+import { t } from "i18next";
 
-// const _placeHolder = "# Welcome to Markditor \nHello, welcome to `Markditor`.\n# 欢迎使用 Markditor\n你好，欢迎使用 `Markditor`"
 function initVditor() {
   const themeMode = usePreferenceStore.getState().themeMode()
   const defaultShowToolbar = usePreferenceStore.getState().defaultShowToolbar
   if (defaultShowToolbar) {
     editorAction.toggleToolbar(true)
   }
-  const _placeHolder = "在此开始记录..."
+  const _placeHolder = t("editor.placeholder")
 
   let vditor: Vditor
   const optioins: IOptions = {
@@ -55,7 +55,7 @@ function initVditor() {
       }
     },
     upload: {
-      // TODO 在这里处理外部粘贴的图片
+      // TODO Paste images
       handler: (files) => {
         files.forEach(file => {
           vditor.insertValue(`![${file.path}](images.png)`)
@@ -77,7 +77,6 @@ export function Editor() {
   useEffect(() => {
     initVditor()
 
-    // 监听新文件打开
     const unsubscribe = useDocumentStore.subscribe((state, prevState) => {
       if (state.path === prevState.path && state.content !== undefined) {
         return

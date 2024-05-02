@@ -8,6 +8,8 @@ import { TitleBarDropdownMenus } from "./TitleBarDropdownMenus";
 import { EnvConstants } from "@/utils/constants";
 import usePreferenceStore, { prefActions } from "@/store/preference";
 import { dialogActions } from "@/store/dialog";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 const iconSize = 16
 
@@ -20,9 +22,11 @@ function ToggleFolderView() {
     icon = <SidebarOpen size={iconSize} />
   }
 
+  const {t} = useTranslation()
+
   const props: TitleMenuItemProps = {
     icon: icon,
-    label: '侧边栏',
+    label: t("titlebar_menu.sidebar"),
     onClick: () => {
       toggleSidebarExpanded()
     },
@@ -38,13 +42,13 @@ function Save() {
   const icon = <SaveIcon size={iconSize} />
   const props: TitleMenuItemProps = {
     icon: icon,
-    label: '保存',
+    label: t("titlebar_menu.save"),
     onClick: async () => {
       const res = await saveDocument()
       if (res) {
-        toast.success("保存成功")
+        toast.success(t("toast.save_success"))
       } else {
-        toast.error("保存失败")
+        toast.error(t("toast.save_fail"))
       }
     },
     isDisabled: saved,
@@ -56,7 +60,7 @@ const NewFile = () => {
   const saved = useDocumentStore((state) => (state.saved));
   const props: TitleMenuItemProps = {
     icon: <PlusCircleIcon size={iconSize} />,
-    label: '新建文件',
+    label: t("titlebar_menu.new_file"),
     onClick: () => {
       dialogActions.showUnsaveAlertIfNeeded({
         doNext: createNewDoc
@@ -76,7 +80,7 @@ const NewFile = () => {
 function ShowSearch() {
   const props: TitleMenuItemProps = {
     icon: <Search size={iconSize} />,
-    label: '搜索',
+    label: t("titlebar_menu.search"),
     onClick: () => { },
     isDisabled: false,
   }
@@ -90,7 +94,7 @@ function OpenDevTool() {
   }
   const openDevToolMenuItem: TitleMenuItemProps = {
     icon: <TerminalSquare size={iconSize} />,
-    label: '开发者工具',
+    label: t("titlebar_menu.devtools"),
     onClick: () => PlatformAPI.openDevTools(),
     isDisabled: false,
   }
@@ -101,7 +105,7 @@ function ToggleThemeMode() {
   const themeMode = usePreferenceStore(s => s.themeMode())
   const menuItem: TitleMenuItemProps = {
     icon: themeMode === "light" ? <Sun size={iconSize} /> : <MoonIcon size={iconSize} />,
-    label: '主题模式',
+    label: t("titlebar_menu.theme_mode"),
     onClick: () => {
       prefActions.setThemeMode(themeMode === "light" ? "dark" : "light")
     },
@@ -113,7 +117,7 @@ function ToggleThemeMode() {
 function MoreMenuItem() {
   const moreMenuItem: TitleMenuItemProps = {
     icon: <MoreHorizontal size={iconSize} />,
-    label: "更多..."
+    label: t("titlebar_menu.more")
   }
   return <TitleMenuItem props={moreMenuItem} />
 }

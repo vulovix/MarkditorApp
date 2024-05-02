@@ -1,10 +1,9 @@
 import useEditorStore, { getVditor, editorAction } from "@/store/editor"
-import * as Toggle from '@radix-ui/react-toggle';
-import { Bold, Code, Italic, ItalicIcon, Link, StrikethroughIcon, Underline } from "lucide-react";
-import { FolderIcon } from "@heroicons/react/24/outline";
+import { Bold, Code, Italic, StrikethroughIcon } from "lucide-react";
 import { ContextMenu, Flex } from "@radix-ui/themes";
 import Vditor from "vditor";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function EditorContextToolbar({ selected }: { selected: string }) {
   let isBold = false
@@ -64,6 +63,8 @@ export function EditorContextMenu(
     }
   }
 
+  const { t } = useTranslation()
+
   const toolbarVisible = useEditorStore(s => s.toolbarVisible)
 
   return (
@@ -76,24 +77,38 @@ export function EditorContextMenu(
 
         <ContextMenu.Separator />
 
-        <ContextMenu.Item onClick={editorAction.insertImage}>插入图片...</ContextMenu.Item>
+        <ContextMenu.Item onClick={editorAction.insertImage}>
+          {t("editor.context_menu.insert_image")}
+        </ContextMenu.Item>
 
-        {/* <ContextMenu.Item onClick={editorAction.insertTable}>添加表格...</ContextMenu.Item> */}
+        {/* <ContextMenu.Item onClick={editorAction.insertTable}>
+        {t("editor.context_menu.insert_table")}
+        </ContextMenu.Item> */}
 
-        {/* <ContextMenu.Item onClick={editorAction.}>插入段落(上)</ContextMenu.Item> */}
+        {/* <ContextMenu.Item onClick={editorAction.}>
+        {t("editor.context_menu.insert_para_upper")}
+        </ContextMenu.Item> */}
 
-        {/* <ContextMenu.Item onClick={editorAction.}>插入段落(下)</ContextMenu.Item> */}
+        {/* <ContextMenu.Item onClick={editorAction.}>
+        {t("editor.context_menu.insert_para_below")}
+        </ContextMenu.Item> */}
 
         <ContextMenu.Separator />
 
         <ContextMenu.Item disabled={!hasSelection} shortcut="Ctrl X"
-          onClick={editorAction.cutContent}>剪切</ContextMenu.Item>
+          onClick={editorAction.cutContent}>{
+            t("editor.context_menu.cut")}
+        </ContextMenu.Item>
 
         <ContextMenu.Item disabled={!hasSelection} shortcut="Ctrl C"
-          onClick={editorAction.copyContent}>复制</ContextMenu.Item>
+          onClick={editorAction.copyContent}>
+          {t("editor.context_menu.copy")}
+        </ContextMenu.Item>
 
         <ContextMenu.Item shortcut="Ctrl V"
-          onClick={editorAction.pasteContent}>粘贴</ContextMenu.Item>
+          onClick={editorAction.pasteContent}>
+          {t("editor.context_menu.paste")}
+        </ContextMenu.Item>
 
         {/* <ContextMenu.Sub>
           <ContextMenu.SubTrigger>More</ContextMenu.SubTrigger>
@@ -107,7 +122,7 @@ export function EditorContextMenu(
 
         <ContextMenu.Separator />
         <ContextMenu.Item onClick={() => editorAction.toggleToolbar()}>
-          {toolbarVisible ? "隐藏工具栏" : "显示工具栏"}
+          {toolbarVisible ? t("editor.context_menu.hide_toolbar") : t("editor.context_menu.show_toolbar")}
         </ContextMenu.Item>
       </ContextMenu.Content>
     </ContextMenu.Root>

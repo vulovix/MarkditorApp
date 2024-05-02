@@ -19,7 +19,12 @@
     "open_file": "打开文件...",
     "open_folder": "打开文件夹...",
     "new_markdown": "新建Markdown",
-    "clear_history": "清除历史记录"
+    "clear_history": {
+      "button_label": "清除历史记录",
+      "title": "清除所有历史记录？",
+      "confirm": "确定",
+      "success": "已清除"
+    }
   },
   "titlebar_dropdown": {
     "open_file": "打开文件...",
@@ -33,8 +38,10 @@
     "sidebar": "侧边栏",
     "new_file": "新建文件",
     "save": "保存",
+    "search": "搜索",
     "theme_mode": "主题模式",
-    "more": "更多"
+    "devtools": "开发者工具",
+    "more": "更多..."
   },
   "dir_panel": {
     "empty_files": "😶 没有文件",
@@ -50,7 +57,20 @@
     "open_in_finder": "在Finder中打开...",
     "open_in_explorer": "在资源管理器中打开..."
   },
-  "editor": {},
+  "editor": {
+    "placeholder": "在此开始输入...",
+    "context_menu": {
+      "insert_image": "插入图片...",
+      "insert_para_upper": "插入段落(上)",
+      "insert_para_below": "插入段落(下)",
+      "insert_table": "插入表格...",
+      "cut": "剪切",
+      "copy": "复制",
+      "paste": "粘贴",
+      "hide_toolbar": "隐藏工具栏",
+      "show_toolbar": "显示工具栏"
+    }
+  },
   "create_dialog": {
     "title_file": "创建文件",
     "title_folder": "创建文件夹",
@@ -71,21 +91,45 @@
     }
   },
   "delete_dialog": {
-    "title": "删除文件",
-    "content": "你确定要删除这个文件吗？",
+    "title_file": "删除文件",
+    "title_folder": "删除文件夹",
+    "desc_file": "确定要删除文件 {{target_name}} 吗？删除后不可恢复",
+    "desc_folder": "确定要删除文件夹 {{target_name}} 吗？删除后不可恢复",
     "confirm": "删除",
-    "cancel": "取消"
+    "cancel": "取消",
+    "success": {
+      "title": "已删除: {{target_name}}"
+    },
+    "fail": {
+      "title": "无法删除: {{target_name}}",
+      "description": "文件可能正在被其他程序使用，无法删除"
+    }
   },
   "rename_dialog": {
-    "title": "重命名文件",
-    "input_placeholder": "输入新的文件名"
+    "title_file": "重命名文件",
+    "title_folder": "重命名文件夹",
+    "desc_file": "输入新的文件名",
+    "desc_folder": "输入新的文件夹名",
+    "confirm": "确定",
+    "cancel": "取消",
+    "invalid_name": {
+      "title": "重命名失败",
+      "description": "文件或目录名含有非法字符"
+    },
+    "success": {
+      "title": "重命名成功"
+    },
+    "fail": {
+      "title": "重命名失败",
+      "description": "文件或目录已存在，或正在被其他程序使用"
+    }
   },
   "unsave_dialog": {
     "title": "文件未保存",
     "content": "在继续操作前保存当前文件的修改吗？",
     "do_nothing": "点错了",
     "save": "保存",
-    "dont_save": "不保存"
+    "discard": "不保存"
   },
   "settings": {
     "title": "设置",
@@ -111,6 +155,21 @@
       "title": "显示工具栏",
       "description": "是否在编辑器顶部显示工具栏。"
     }
+  },
+  "bottom_info_bar": {
+    "outline": "大纲",
+    "undo": "撤销",
+    "redo": "重做",
+    "source_code": "源码模式"
+  },
+  "doc_info": {
+    "untitled_file": "<无标题>",
+    "unknown_path": "<未保存>",
+    "statistic": "统计",
+    "count": "{{lineCount}} 行 / {{charCount}} 字符",
+    "char_count": "{{charCount}} 字符",
+    "saved": "已保存",
+    "unsaved": "未保存"
   },
   "file_filter": {
     "markdown": "Markdown 文件",
