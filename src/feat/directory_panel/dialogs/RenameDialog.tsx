@@ -8,20 +8,17 @@ import { useTranslation } from "react-i18next";
 
 export function RenameDialog({ show, entity, onOpenChange }: DialogProps) {
   const [inputName, setInputName] = useState(entity.name);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   async function confirm() {
     if (!validateDirectoryName(inputName)) {
-      toast.error(
-        t("rename_dialog.invalid_name.title"),
-        { description: t("rename_dialog.invalid_name.description") }
-      );
-      onOpenChange(false)
-      return
+      toast.error(t("rename_dialog.invalid_name.title"), { description: t("rename_dialog.invalid_name.description") });
+      onOpenChange(false);
+      return;
     }
 
-    let result = false
-    let finalName = inputName.trim()
+    let result = false;
+    let finalName = inputName.trim();
 
     if (entity.type === "file") {
       finalName = fixMdFileName(inputName);
@@ -33,23 +30,16 @@ export function RenameDialog({ show, entity, onOpenChange }: DialogProps) {
     if (result) {
       toast.success(t("rename_dialog.success.title"), { description: finalName });
     } else {
-      toast.error(
-        t("rename_dialog.fail.title"),
-        { description: t("rename_dialog.fail.description") }
-      )
+      toast.error(t("rename_dialog.fail.title"), { description: t("rename_dialog.fail.description") });
     }
     // clear state
     onOpenChange(false);
     // setReset(true)
   }
 
-  const title = entity.type === "dir" ?
-    t("rename_dialog.title_folder") :
-    t("rename_dialog.title_file")
+  const title = entity.type === "dir" ? t("rename_dialog.title_folder") : t("rename_dialog.title_file");
 
-  const desc = entity.type === "dir" ?
-    t("rename_dialog.desc_folder") :
-    t("rename_dialog.desc_file")
+  const desc = entity.type === "dir" ? t("rename_dialog.desc_folder") : t("rename_dialog.desc_file");
 
   return (
     <Dialog.Root open={show} onOpenChange={onOpenChange}>
@@ -58,7 +48,9 @@ export function RenameDialog({ show, entity, onOpenChange }: DialogProps) {
         <DialogDescription>
           {desc}
           <TextField.Input
-            my="2" value={inputName} placeholder={entity.name}
+            my="2"
+            value={inputName}
+            placeholder={entity.name}
             onInput={(e) => setInputName(e.currentTarget.value)}
             onKeyUp={(e) => e.key === "Enter" && confirm()}
           />

@@ -1,51 +1,45 @@
-import { create } from 'zustand'
-import useDocumentStore from './document'
+import { create } from "zustand";
+import useDocumentStore from "./document";
 
 interface UnsaveAlertProps {
-  visible: boolean
-  doNext?: () => void | Promise<void>
+  visible: boolean;
+  doNext?: () => void | Promise<void>;
 }
 
 const initialDialogState = {
   createDialog: false,
   unsaveAlert: {
     visible: false,
-    doNext: () => { }
+    doNext: () => {},
   } as UnsaveAlertProps,
-}
+};
 
-const useDialogStore =
-  create<typeof initialDialogState>(
-    () => initialDialogState
-  )
+const useDialogStore = create<typeof initialDialogState>(() => initialDialogState);
 
-const { setState, getState } = useDialogStore
+const { setState, getState } = useDialogStore;
 
 // -----------------------------------------
 
 class DialogActions {
-
   public showUnsaveAlertIfNeeded = ({ doNext }: { doNext: () => void }) => {
     if (useDocumentStore.getState().shouldAlertSave()) {
       setState((state) => ({
         ...state,
-        unsaveAlert: { visible: true, doNext, }
-      }))
+        unsaveAlert: { visible: true, doNext },
+      }));
     } else {
-      doNext()
+      doNext();
     }
-  }
+  };
 
   public hideUnsaveAlert = () => {
     setState((state) => ({
       ...state,
-      unsaveAlert: { visible: false, doNext: () => { }, }
-    }))
-  }
-
+      unsaveAlert: { visible: false, doNext: () => {} },
+    }));
+  };
 }
 
-export const dialogActions = new DialogActions()
+export const dialogActions = new DialogActions();
 
-export default useDialogStore
-
+export default useDialogStore;

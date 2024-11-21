@@ -1,97 +1,89 @@
-import { ListItem } from "@/components/ListItem"
-import { openDirectory, openFile } from "@/store/directory"
-import useDocumentStore from "@/store/document"
-import { DocumentTextIcon } from "@heroicons/react/24/outline"
-import { ChevronDown, ChevronRight, Folder, FolderClosed } from "lucide-react"
-import { useState } from "react"
-import { isMarkdownFile } from "@/utils/path"
-import { toast } from "sonner"
-import { DirectoryContextMenu } from "./DirectoryContextMenu"
-import { cn } from "@/utils/styles"
-import { dialogActions } from "@/store/dialog"
-import { t } from "i18next"
+import { ListItem } from "@/components/ListItem";
+import { openDirectory, openFile } from "@/store/directory";
+import useDocumentStore from "@/store/document";
+import { DocumentTextIcon } from "@heroicons/react/24/outline";
+import { ChevronDown, ChevronRight, Folder, FolderClosed } from "lucide-react";
+import { useState } from "react";
+import { isMarkdownFile } from "@/utils/path";
+import { toast } from "sonner";
+import { DirectoryContextMenu } from "./DirectoryContextMenu";
+import { cn } from "@/utils/styles";
+import { dialogActions } from "@/store/dialog";
+import { t } from "i18next";
 
 interface DirectoryItemProps {
-  entity: DirectoryEntity,
-  open?: boolean,
-  depth: number,
+  entity: DirectoryEntity;
+  open?: boolean;
+  depth: number;
 }
 
-export function extractChildrenNode
-  (dirs: DirectoryEntity[], depth: number) {
+export function extractChildrenNode(dirs: DirectoryEntity[], depth: number) {
   if (!dirs || dirs.length === 0) {
-    return []
+    return [];
   }
-  const children = []
+  const children = [];
   for (const d of dirs) {
-    children.push(
-      <DirectoryItem key={d.path} depth={depth} entity={d} />
-    )
+    children.push(<DirectoryItem key={d.path} depth={depth} entity={d} />);
   }
-  return children
+  return children;
 }
-
 
 function DirItem(props: DirectoryItemProps) {
-  const data = props.entity
-  const [dirOpened, setDirOpened] = useState(false)
-  const childrenNode = dirOpened ? extractChildrenNode(data.children, props.depth + 1) : []
-  const normalStyle = "pl-[12px] hover:bg-accent active:bg-accent focus:bg-accent text-foreground opacity-75 hover:opacity-100"
-  const folderIconStyle = "w-[15px] opacity-75"
+  const data = props.entity;
+  const [dirOpened, setDirOpened] = useState(false);
+  const childrenNode = dirOpened ? extractChildrenNode(data.children, props.depth + 1) : [];
+  const normalStyle = "pl-[12px] hover:bg-accent active:bg-accent focus:bg-accent text-foreground opacity-75 hover:opacity-100";
+  const folderIconStyle = "w-[15px] opacity-75";
 
-  const folderIcon = dirOpened
-    ? <Folder className={folderIconStyle} /> : <FolderClosed className={folderIconStyle} />
-  const arrow = dirOpened
-    ? <ChevronDown className={folderIconStyle} /> : <ChevronRight className={folderIconStyle} />
+  const folderIcon = dirOpened ? <Folder className={folderIconStyle} /> : <FolderClosed className={folderIconStyle} />;
+  const arrow = dirOpened ? <ChevronDown className={folderIconStyle} /> : <ChevronRight className={folderIconStyle} />;
 
   async function handleClick() {
     if (dirOpened) {
-      setDirOpened(false)
-      return
+      setDirOpened(false);
+      return;
     }
-    openDirectory(data.path)
-    setDirOpened(true)
+    openDirectory(data.path);
+    setDirOpened(true);
   }
 
   return (
     <>
-      <ListItem
-        className={normalStyle}
-        key={data.path}
-        leadingSpace={15 * props.depth}
-        leading={arrow}
-        onClick={handleClick}
-      >
-        <div className="flex gap-2 justify-center items-center">{folderIcon} {data.name}</div>
+      <ListItem className={normalStyle} key={data.path} leadingSpace={15 * props.depth} leading={arrow} onClick={handleClick}>
+        <div className="flex gap-2 justify-center items-center">
+          {folderIcon} {data.name}
+        </div>
       </ListItem>
       {childrenNode}
     </>
-  )
+  );
 }
 
 function FileItem(props: DirectoryItemProps) {
-  const data = props.entity
-  const curDocPath = useDocumentStore((state) => state.path ?? "")
-  const fileOpened = curDocPath === data.path
-  const fileIconStyle = "w-[15px] opacity-75"
-  const fileIcon = <DocumentTextIcon className={fileIconStyle} />
+  const data = props.entity;
+  const curDocPath = useDocumentStore((state) => state.path ?? "");
+  const fileOpened = curDocPath === data.path;
+  const fileIconStyle = "w-[15px] opacity-75";
+  const fileIcon = <DocumentTextIcon className={fileIconStyle} />;
 
-  const normalStyle = fileOpened ? "border-l-[4px] bg-accent" : "pl-[12px] hover:bg-accent active:bg-accent text-accent-foreground opacity-75 hover:opacity-100"
+  const normalStyle = fileOpened
+    ? "border-l-[4px] bg-accent"
+    : "pl-[12px] hover:bg-accent active:bg-accent text-accent-foreground opacity-75 hover:opacity-100";
 
   async function handleClick() {
-    if (useDocumentStore.getState().path === data.path) {
-      return
+    console.log();
+    const currentPath = useDocumentStore.getState().path;
+    console.log(currentPath, data.path);
+    if (currentPath === data.path) {
+      return;
     }
 
     if (!isMarkdownFile(data.path)) {
-      toast.warning(t("toast.warn_not_markdown"))
-      return
+      toast.warning(t("toast.warn_not_markdown"));
+      return;
     }
-    dialogActions.showUnsaveAlertIfNeeded(
-      { doNext: () => openFile(data.path) }
-    )
+    dialogActions.showUnsaveAlertIfNeeded({ doNext: () => openFile(data.path) });
   }
-
 
   return (
     <ListItem
@@ -102,23 +94,24 @@ function FileItem(props: DirectoryItemProps) {
       onClick={handleClick}
       trailing={<span />}
     >
-      <div className="flex gap-2">{fileIcon} {data.name}</div>
+      <div className="flex gap-2">
+        {fileIcon} {data.name}
+      </div>
     </ListItem>
-  )
+  );
 }
 
 export default function DirectoryItem(props: DirectoryItemProps) {
-  let child
+  let child;
   if (props.entity.type === "dir") {
-    child = <DirItem entity={props.entity} depth={props.depth} open={props.open} />
+    child = <DirItem entity={props.entity} depth={props.depth} open={props.open} />;
   } else {
-    child = <FileItem entity={props.entity} depth={props.depth} open={props.open} />
+    child = <FileItem entity={props.entity} depth={props.depth} open={props.open} />;
   }
 
   return (
     <DirectoryContextMenu entity={props.entity}>
       <div>{child}</div>
     </DirectoryContextMenu>
-  )
+  );
 }
-

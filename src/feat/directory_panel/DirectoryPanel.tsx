@@ -1,7 +1,6 @@
-
 import { FolderOpenIcon } from "@heroicons/react/24/outline";
 import { extractChildrenNode } from "./DirectoryItem";
-import { Button, ScrollArea, } from "@radix-ui/themes";
+import { Button, ScrollArea } from "@radix-ui/themes";
 import useDirectoryStore, { selectRootDir } from "@/store/directory";
 import { DirectoryPanelHeader } from "./DirectoryPanelHeader";
 import { DirectoryContextMenu } from "./DirectoryContextMenu";
@@ -9,12 +8,11 @@ import { dialogActions } from "@/store/dialog";
 import { useTranslation } from "react-i18next";
 
 function DirectoryEmptyView() {
-
   function willSelectDir() {
-    dialogActions.showUnsaveAlertIfNeeded({ doNext: selectRootDir })
+    dialogActions.showUnsaveAlertIfNeeded({ doNext: selectRootDir });
   }
 
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <>
@@ -25,34 +23,31 @@ function DirectoryEmptyView() {
         </Button>
       </div>
     </>
-  )
+  );
 }
 
-
 function DirectoryTreeView() {
-  const children = useDirectoryStore((state) => state.root?.children ?? [])
-  const rootDir = useDirectoryStore((state) => state.root)
+  const children = useDirectoryStore((state) => state.root?.children ?? []);
+  const rootDir = useDirectoryStore((state) => state.root);
 
-  const childrenNode = extractChildrenNode(children, 0)
+  const childrenNode = extractChildrenNode(children, 0);
 
   return (
     <DirectoryContextMenu entity={rootDir!}>
       <ScrollArea scrollbars="vertical" style={{ width: "auto" }} size={"1"}>
-        <div className="flex flex-col">
-          {childrenNode}
-        </div>
+        <div className="flex flex-col">{childrenNode}</div>
       </ScrollArea>
-    </DirectoryContextMenu >
-  )
+    </DirectoryContextMenu>
+  );
 }
 
 export function DirectoryPanel() {
-  const root = useDirectoryStore((state) => state.root)
+  const root = useDirectoryStore((state) => state.root);
 
   return (
     <div className="flex flex-col h-full bg-background border-r">
       {root !== undefined && <DirectoryPanelHeader />}
       {root !== undefined ? <DirectoryTreeView /> : <DirectoryEmptyView />}
     </div>
-  )
+  );
 }

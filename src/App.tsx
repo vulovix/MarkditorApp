@@ -1,4 +1,5 @@
-import { Editor } from "./feat/editor/Editor";
+import { Editor } from "./feat/rich-editor/Editor";
+// import { Editor } from "./feat/editor/Editor";
 import { useEffect, useState } from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "./components/ui/resizable";
 import { DirectoryPanel } from "./feat/directory_panel/DirectoryPanel";
@@ -6,7 +7,7 @@ import useNavigationStore from "./store/navigation";
 import { WindowTitleBar } from "./feat/title_bar/TitleBar";
 import useDocumentStore from "./store/document";
 import { Welcome } from "./feat/welcome/Welcome";
-import { Theme } from "@radix-ui/themes";
+import { sliderPropDefs, Theme } from "@radix-ui/themes";
 import { Toaster } from "sonner";
 import usePreferenceStore from "./store/preference";
 import { UnsaveAlertDialog } from "./feat/editor/UnsaveAlertDialog";
@@ -16,58 +17,71 @@ import { initDirectoryOpenListener } from "@/store/preference";
 import { getParentDirectory } from "./utils/path";
 import i18n from "./i18n/i18n";
 
-
 // -------------------------------
 // Custom lifecycle
 // onAppLaunch() -> onAppReady() -> onAppExit()
 // -------------------------------
 
-onAppLaunch()
+onAppLaunch();
 
 /**
- * Execuate once as soon as the app is launched, 
+ * Execuate once as soon as the app is launched,
  * before DOM is ready. May be finished after `onAppReady()`
  */
 async function onAppLaunch() {
-  const pathArg = (await PlatformAPI.os.readCliArgs()).source
+  // @ts-ignore
+  // if (window.__TAURI_IPC__) {
+  //   // Tauri environment detected, safe to use Tauri APIs
+  //   import("@tauri-apps/api")
+  //     .then((tauriApi) => {
+  //       console.log("Tauri API loaded:", tauriApi);
+  //       // Your Tauri-specific logic here
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to load Tauri API:", error);
+  //     });
+  // } else {
+  //   console.warn("Tauri environment not detected. Running in a non-Tauri environment.");
+  // }
+
+  const pathArg = (await PlatformAPI.os.readCliArgs()).source;
   if (pathArg) {
     if (await PlatformAPI.exists(pathArg)) {
-      openFile(pathArg)
-      setRootDir(getParentDirectory(pathArg))
+      openFile(pathArg);
+      setRootDir(getParentDirectory(pathArg));
     }
   }
 
-  i18n.changeLanguage(usePreferenceStore.getState().languageCode)
+  i18n.changeLanguage(usePreferenceStore.getState().languageCode);
 }
 
-
 /**
- * Execute after ReactDOM is ready. 
+ * Execute after ReactDOM is ready.
  * Used in `useEffect()` inside `<ThemedApp />` componment.
  */
 async function onAppReady() {
-  registerListeners()
+  registerListeners();
 }
 
 /**
- * Execute after ReactDOM is unmout. 
+ * Execute after ReactDOM is unmout.
  * Used in `useEffect()` inside `<ThemedApp />` componment.
  */
 function onAppExit() {
-  unregisterListeners()
+  unregisterListeners();
 }
 
 // -------------------------------
 // Global event listeners
 // -------------------------------
-let unlistenDirOpen: () => void | undefined
+let unlistenDirOpen: () => void | undefined;
 
 function registerListeners(): void {
-  unlistenDirOpen = initDirectoryOpenListener()
+  unlistenDirOpen = initDirectoryOpenListener();
 }
 
 function unregisterListeners(): void {
-  unlistenDirOpen?.()
+  unlistenDirOpen?.();
 }
 
 // -------------------------------
@@ -76,26 +90,25 @@ function unregisterListeners(): void {
 
 const App = () => {
   const showSidePanel = useNavigationStore((state) => state.sidebarExpanded);
-  const [panelSize, setPanelSize] = useState(20)
-  const onResize = (size: number) => setPanelSize(size)
+  const [panelSize, setPanelSize] = useState(20);
+  const onResize = (size: number) => setPanelSize(size);
   const titleBarHeight = 32;
 
   const hasDoc = useDocumentStore((state) => state.hasDocOpened());
+
+  console.log("has doc ", hasDoc);
 
   return (
     <div>
       <div style={{ height: titleBarHeight }}>
         <WindowTitleBar />
       </div>
-      <div className="flex border-t" style={{ height: `calc(100vh - ${titleBarHeight}px)` }} >
+      <div className="flex border-t" style={{ height: `calc(100vh - ${titleBarHeight}px)` }}>
         <ResizablePanelGroup direction="horizontal">
-
           {/* Sidebar - directory panel */}
           {showSidePanel && (
             <>
-              <ResizablePanel id="DirectorySidePanel" order={1}
-                defaultSize={panelSize} minSize={15} maxSize={45}
-                onResize={onResize}>
+              <ResizablePanel id="DirectorySidePanel" order={1} defaultSize={panelSize} minSize={15} maxSize={45} onResize={onResize}>
                 <DirectoryPanel />
               </ResizablePanel>
               <ResizableHandle style={{ width: 0 }} id="handle" />
@@ -109,22 +122,26 @@ const App = () => {
         </ResizablePanelGroup>
       </div>
     </div>
-  )
+  );
 };
 
 export function ThemedApp() {
   // Right after the DOM is ready
   useEffect(() => {
-    onAppReady()
-    return onAppExit
-  }, [])
+    onAppReady();
+    return onAppExit;
+  }, []);
 
-  const themeMode = usePreferenceStore((state) => state.themeMode())
+  const themeMode = usePreferenceStore((state) => state.themeMode());
   return (
     <Theme appearance={themeMode} className={themeMode === "dark" ? "dark" : ""}>
       <App />
-      <Toaster position="bottom-right"
-        theme={themeMode} closeButton duration={3000} richColors
+      <Toaster
+        position="bottom-right"
+        theme={themeMode}
+        closeButton
+        duration={3000}
+        richColors
         toastOptions={{
           actionButtonStyle: {
             background: "transparent",
@@ -141,8 +158,5 @@ export function ThemedApp() {
       <UnsaveAlertDialog />
       {/* <ThemePanel /> */}
     </Theme>
-  )
+  );
 }
-
-
-
