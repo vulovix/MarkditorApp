@@ -15,37 +15,30 @@ function handleClearHistory() {
     action: {
       label: <Button size={"1"}>{t("welcome.clear_history.confirm")}</Button>,
       onClick: () => {
-        prefActions.clearAllHistory()
-        toast.success(
-          t("welcome.clear_history.success"),
-          { id: "clear-history-success" }
-        )
-      }
+        prefActions.clearAllHistory();
+        toast.success(t("welcome.clear_history.success"), { id: "clear-history-success" });
+      },
     },
-  })
+  });
 }
 
 const MAX_HISTORY_ITEMS = 5;
 
 const HistoryItems = () => {
-  const root = useDirectoryStore(s => s.root)
-  const { t } = useTranslation()
+  const root = useDirectoryStore((s) => s.root);
+  const { t } = useTranslation();
 
-  const fileHistory = usePreferenceStore(
-    (state) => state.fileHistory.filter((_, i) => i < MAX_HISTORY_ITEMS)
-  )
-  const folderHistory = usePreferenceStore(
-    (state) => state.folderHistory.filter((_, i) => i < MAX_HISTORY_ITEMS)
-  )
+  const fileHistory = usePreferenceStore((state) => state.fileHistory.filter((_, i) => i < MAX_HISTORY_ITEMS));
+  const folderHistory = usePreferenceStore((state) => state.folderHistory.filter((_, i) => i < MAX_HISTORY_ITEMS));
 
   if (root !== undefined || (fileHistory.length === 0 && folderHistory.length === 0)) {
-    return <div></div>
+    return <div></div>;
   }
 
-  const fileLabel = fileHistory.length === 0 ? t("history.empty_files") : t("history.recent_files")
-  const folderLabel = folderHistory.length === 0 ? t("history.empty_folders") : t("history.recent_folders")
+  const fileLabel = fileHistory.length === 0 ? t("history.empty_files") : t("history.recent_files");
+  const folderLabel = folderHistory.length === 0 ? t("history.empty_folders") : t("history.recent_folders");
 
-  const clearHistoryLabel = t("welcome.clear_history.button_label")
+  const clearHistoryLabel = t("welcome.clear_history.button_label");
 
   return (
     <Flex direction={"column"} className="text-sm" gap={"2"} mt={"6"}>
@@ -68,20 +61,21 @@ const HistoryItems = () => {
         {clearHistoryLabel}
       </Link>
     </Flex>
-  )
-}
+  );
+};
 
-function HistoryItem({ path, onClick }: { path: string, onClick: () => void }) {
+function HistoryItem({ path, onClick }: { path: string; onClick: () => void }) {
   return (
     <div className="text-left flex items-center select-none">
-      <Link onClick={onClick} className="hover:underline text-md max-w-[300px] text-ellipsis line-clamp-1">{getNameFromPath(path, false)}</Link>
+      <Link onClick={onClick} className="hover:underline text-md max-w-[300px] text-ellipsis line-clamp-1">
+        {getNameFromPath(path, false)}
+      </Link>
       <div className="text-xs ml-3 opacity-55 text-ellipsis line-clamp-1 max-w-[300px]">{path}</div>
     </div>
-  )
+  );
 }
 
 export function Welcome() {
-
   const { t } = useTranslation();
 
   return (
@@ -97,14 +91,17 @@ export function Welcome() {
 
         <Flex gap="3" mt="3" direction={"column"}>
           <Button size={"3"} onClick={createNewDoc}>
-            <PencilIcon size={16} />{t("welcome.new_markdown")}
+            <PencilIcon size={16} />
+            {t("welcome.new_markdown")}
           </Button>
           <Flex gap="3">
             <Button variant="soft" size={"3"} onClick={selectFile}>
-              <FileTextIcon size={16} />{t("welcome.open_file")}
+              <FileTextIcon size={16} />
+              {t("welcome.open_file")}
             </Button>
             <Button variant="soft" size={"3"} onClick={selectRootDir}>
-              <FolderIcon size={16} />{t("welcome.open_folder")}
+              <FolderIcon size={16} />
+              {t("welcome.open_folder")}
             </Button>
           </Flex>
         </Flex>
@@ -112,5 +109,5 @@ export function Welcome() {
 
       <HistoryItems />
     </div>
-  )
+  );
 }

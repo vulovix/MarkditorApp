@@ -12,19 +12,17 @@ type NonRootDirectoryMenuItemsProps = {
   entity: DirectoryEntity;
   onRename: () => void;
   onDelete: () => void;
-}
+};
 
 function openInSystem(entity: DirectoryEntity) {
-  if (entity.type === 'file')
-    PlatformAPI.locateFile(entity.path);
-  else
-    PlatformAPI.locateFolder(entity.path);
+  if (entity.type === "file") PlatformAPI.locateFile(entity.path);
+  else PlatformAPI.locateFolder(entity.path);
 }
 
 function NonRootDirectoryMenuItems({ entity, onRename, onDelete }: NonRootDirectoryMenuItemsProps) {
   async function handleCopy() {
-    if (entity.type === 'file') {
-      const destPath = await copyFileInPlace(entity.path)
+    if (entity.type === "file") {
+      const destPath = await copyFileInPlace(entity.path);
       if (destPath) {
         toast.success(t("toast.copy_success"), { description: destPath });
       } else {
@@ -33,56 +31,48 @@ function NonRootDirectoryMenuItems({ entity, onRename, onDelete }: NonRootDirect
     }
   }
 
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <>
       <ContextMenu.Item onClick={() => openFile(entity.path)}>{t("dir_panel_context_menu.open")}</ContextMenu.Item>
       <ContextMenu.Item onClick={onRename}>{t("dir_panel_context_menu.rename")}</ContextMenu.Item>
-      {entity.type === 'file' && <ContextMenu.Item onClick={handleCopy}>{t("dir_panel_context_menu.copy")}</ContextMenu.Item>}
-      <ContextMenu.Item color="red" onClick={onDelete}>{t("dir_panel_context_menu.delete")}</ContextMenu.Item>
+      {entity.type === "file" && <ContextMenu.Item onClick={handleCopy}>{t("dir_panel_context_menu.copy")}</ContextMenu.Item>}
+      <ContextMenu.Item color="red" onClick={onDelete}>
+        {t("dir_panel_context_menu.delete")}
+      </ContextMenu.Item>
     </>
-  )
+  );
 }
 
-export function DirectoryContextMenu({ children, entity }: { children: React.ReactNode, entity: DirectoryEntity }) {
-  const rootDir = useDirectoryStore((state) => state.root)
-  const isRoot = entity.path === rootDir?.path
+export function DirectoryContextMenu({ children, entity }: { children: React.ReactNode; entity: DirectoryEntity }) {
+  const rootDir = useDirectoryStore((state) => state.root);
+  const isRoot = entity.path === rootDir?.path;
 
-  const [showDelete, setShowDelete] = useState(false)
-  const [showRename, setShowRename] = useState(false)
-  const [showCreate, setShowCreate] = useState(false)
-  const [newItemType, setNewItemType] = useState<"dir" | "file">("dir")
+  const [showDelete, setShowDelete] = useState(false);
+  const [showRename, setShowRename] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newItemType, setNewItemType] = useState<"dir" | "file">("dir");
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   function handleCreateFile() {
-    setNewItemType("file")
-    setShowCreate(true)
+    setNewItemType("file");
+    setShowCreate(true);
   }
 
   function handleCreateDirectory() {
-    setNewItemType("dir")
-    setShowCreate(true)
+    setNewItemType("dir");
+    setShowCreate(true);
   }
 
   return (
     <>
       <ContextMenu.Root>
         <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
-        <ContextMenu.Content onContextMenu={(e) => e.stopPropagation()}
-          className="">
-          <div className="line-clamp-1 w-[11rem] max-w-[15rem] text-xs text-ellipsis break-all py-1.5 px-3 mb-1 opacity-40 h-6">
-            {entity.name}
-          </div>
-          {
-            !isRoot &&
-            <NonRootDirectoryMenuItems
-              entity={entity}
-              onRename={() => setShowRename(true)}
-              onDelete={() => setShowDelete(true)}
-            />
-          }
+        <ContextMenu.Content onContextMenu={(e) => e.stopPropagation()} className="">
+          <div className="line-clamp-1 w-[11rem] max-w-[15rem] text-xs text-ellipsis break-all py-1.5 px-3 mb-1 opacity-40 h-6">{entity.name}</div>
+          {!isRoot && <NonRootDirectoryMenuItems entity={entity} onRename={() => setShowRename(true)} onDelete={() => setShowDelete(true)} />}
           <ContextMenu.Separator />
 
           <ContextMenu.Item onClick={handleCreateFile}>{t("dir_panel_context_menu.create_file")}</ContextMenu.Item>
@@ -94,13 +84,9 @@ export function DirectoryContextMenu({ children, entity }: { children: React.Rea
         </ContextMenu.Content>
       </ContextMenu.Root>
 
-
       <DeleteDialog show={showDelete} entity={entity} onOpenChange={setShowDelete} />
       <RenameDialog show={showRename} key={entity.path} entity={entity} onOpenChange={setShowRename} />
-      <CreateDialog show={showCreate}
-        newItemType={newItemType}
-        entity={entity} onOpenChange={setShowCreate}
-      />
+      <CreateDialog show={showCreate} newItemType={newItemType} entity={entity} onOpenChange={setShowCreate} />
     </>
-  )
+  );
 }

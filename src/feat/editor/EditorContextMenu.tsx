@@ -1,4 +1,4 @@
-import useEditorStore, { getVditor, editorAction } from "@/store/editor"
+import useEditorStore, { getVditor, editorAction } from "@/store/editor";
 import { Bold, Code, Italic, StrikethroughIcon } from "lucide-react";
 import { ContextMenu, Flex } from "@radix-ui/themes";
 import Vditor from "vditor";
@@ -6,28 +6,28 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 function EditorContextToolbar({ selected }: { selected: string }) {
-  let isBold = false
-  let isItalic = false
-  let isStrikethrough = false
-  let isCode = false
+  let isBold = false;
+  let isItalic = false;
+  let isStrikethrough = false;
+  let isCode = false;
 
   if (selected.startsWith("**") && selected.endsWith("**")) {
-    isBold = true
+    isBold = true;
     if (selected.startsWith("***") && selected.endsWith("***")) {
-      isItalic = true
+      isItalic = true;
     }
   } else if (selected.startsWith("*") && selected.endsWith("*")) {
-    isItalic = true
+    isItalic = true;
   }
 
   if (selected.startsWith("~~") && selected.endsWith("~~")) {
-    isStrikethrough = true
+    isStrikethrough = true;
   }
   if (selected.startsWith("`") && selected.endsWith("`")) {
-    isCode = true
+    isCode = true;
   }
 
-  const selectedClass = "text-primary hover:text-white bg-accent hover:bg-primary"
+  const selectedClass = "text-primary hover:text-white bg-accent hover:bg-primary";
 
   return (
     <Flex gap={"1"}>
@@ -44,42 +44,34 @@ function EditorContextToolbar({ selected }: { selected: string }) {
         <Code className="h-4 w-4" />
       </ContextMenu.Item>
     </Flex>
-  )
+  );
 }
 
-export function EditorContextMenu(
-  { children }:
-    { children: React.ReactNode, vditor?: Vditor }
-) {
-
-  const [hasSelection, setHasSelection] = useState(false)
-  const [selected, setSelected] = useState("")
+export function EditorContextMenu({ children }: { children: React.ReactNode; vditor?: Vditor }) {
+  const [hasSelection, setHasSelection] = useState(false);
+  const [selected, setSelected] = useState("");
 
   function onOpenChange(open: boolean) {
     if (open) {
-      const text = editorAction.getEditorSelection() ?? ""
-      setSelected(text)
-      setHasSelection(text.length > 0)
+      const text = editorAction.getEditorSelection() ?? "";
+      setSelected(text);
+      setHasSelection(text.length > 0);
     }
   }
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const toolbarVisible = useEditorStore(s => s.toolbarVisible)
+  const toolbarVisible = useEditorStore((s) => s.toolbarVisible);
 
   return (
     <ContextMenu.Root onOpenChange={onOpenChange}>
-      <ContextMenu.Trigger>
-        {children}
-      </ContextMenu.Trigger>
+      <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
       <ContextMenu.Content>
         <EditorContextToolbar selected={selected} />
 
         <ContextMenu.Separator />
 
-        <ContextMenu.Item onClick={editorAction.insertImage}>
-          {t("editor.context_menu.insert_image")}
-        </ContextMenu.Item>
+        <ContextMenu.Item onClick={editorAction.insertImage}>{t("editor.context_menu.insert_image")}</ContextMenu.Item>
 
         {/* <ContextMenu.Item onClick={editorAction.insertTable}>
         {t("editor.context_menu.insert_table")}
@@ -95,18 +87,15 @@ export function EditorContextMenu(
 
         <ContextMenu.Separator />
 
-        <ContextMenu.Item disabled={!hasSelection} shortcut="Ctrl X"
-          onClick={editorAction.cutContent}>{
-            t("editor.context_menu.cut")}
+        <ContextMenu.Item disabled={!hasSelection} shortcut="Ctrl X" onClick={editorAction.cutContent}>
+          {t("editor.context_menu.cut")}
         </ContextMenu.Item>
 
-        <ContextMenu.Item disabled={!hasSelection} shortcut="Ctrl C"
-          onClick={editorAction.copyContent}>
+        <ContextMenu.Item disabled={!hasSelection} shortcut="Ctrl C" onClick={editorAction.copyContent}>
           {t("editor.context_menu.copy")}
         </ContextMenu.Item>
 
-        <ContextMenu.Item shortcut="Ctrl V"
-          onClick={editorAction.pasteContent}>
+        <ContextMenu.Item shortcut="Ctrl V" onClick={editorAction.pasteContent}>
           {t("editor.context_menu.paste")}
         </ContextMenu.Item>
 
@@ -126,5 +115,5 @@ export function EditorContextMenu(
         </ContextMenu.Item>
       </ContextMenu.Content>
     </ContextMenu.Root>
-  )
+  );
 }

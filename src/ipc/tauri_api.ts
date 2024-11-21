@@ -1,14 +1,15 @@
-import { appWindow, } from '@tauri-apps/api/window'
-import { createDir, readDir, removeDir, renameFile, writeTextFile, readTextFile, removeFile, exists, copyFile } from '@tauri-apps/api/fs';
-import { open as openDialog, save } from '@tauri-apps/api/dialog';
-import { invoke } from '@tauri-apps/api';
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { readDir, remove, rename, writeTextFile, readTextFile, exists, copyFile, DirEntry, mkdir } from "@tauri-apps/plugin-fs";
+import { open as openDialog, save } from "@tauri-apps/plugin-dialog";
+import { invoke } from "@tauri-apps/api/core";
 import { CliArgs, IPlatformAPI } from "shared/platform_api";
-import { getNameFromPath, isMarkdownFile } from '@/utils/path';
-import { Command, open as openIn } from '@tauri-apps/api/shell';
-import { getMatches } from '@tauri-apps/api/cli';
-import { IFileFilter, markdownFilter } from '@shared/file_filters';
-import { error } from 'console';
+import { getNameFromPath, isMarkdownFile } from "@/utils/path";
+import { Command, open as openIn } from "@tauri-apps/plugin-shell";
+import { getMatches } from "@tauri-apps/plugin-cli";
+import { IFileFilter, markdownFilter } from "@shared/file_filters";
+import { join } from "@tauri-apps/api/path";
 
+const appWindow = getCurrentWindow();
 
 export const TauriAPI: IPlatformAPI = {
   async selectDirectory(): Promise<DirectoryEntity | undefined> {
@@ -16,7 +17,7 @@ export const TauriAPI: IPlatformAPI = {
       multiple: false,
       directory: true,
     });
-    if (selectedPath && typeof selectedPath === 'string') {
+    if (selectedPath && typeof selectedPath === "string") {
       return {
         type: "dir",
         name: getNameFromPath(selectedPath),
@@ -32,27 +33,29 @@ export const TauriAPI: IPlatformAPI = {
     const dirs: DirectoryEntity[] = [];
     const files: DirectoryEntity[] = [];
     for (const entry of entries) {
-      if (entry.children) {
+      if (entry.isDirectory) {
+        const entryPath = await join(path, entry.name);
+
         dirs.push({
           type: "dir",
           name: entry.name ?? "",
-          path: entry.path,
-          children: []
+          path: entryPath,
+          children: [],
         });
       } else {
         if (isMarkdownFile(entry.name ?? "")) {
+          const entryPath = await join(path, entry.name);
           files.push({
             type: "file",
             name: entry.name ?? "",
-            path: entry.path,
-            children: []
+            path: entryPath,
+            children: [],
           });
         }
       }
     }
     return [...dirs, ...files];
   },
-
   os: {
     readCliArgs: async function (): Promise<CliArgs> {
       const matches = await getMatches();
@@ -61,7 +64,7 @@ export const TauriAPI: IPlatformAPI = {
       if (matches.args) {
         const args = matches.args;
         try {
-          parsedArgs.source = args?.source?.value as string ?? "";
+          parsedArgs.source = (args?.source?.value as string) ?? "";
         } catch (err) {
           console.error(err);
         }
@@ -71,25 +74,25 @@ export const TauriAPI: IPlatformAPI = {
 
     setAsDefaultOpenApp: async function (): Promise<boolean> {
       try {
-        await invoke("set_default_open_win32")
-        return true
+        await invoke("set_default_open_win32");
+        return true;
       } catch (err) {
         console.error(err);
-        return false
+        return false;
       }
-    }
+    },
   },
 
   async selectFile(filter: IFileFilter = markdownFilter()): Promise<DirectoryEntity | undefined> {
     const selectedPath = await openDialog({
-      filters: [filter]
+      filters: [filter],
     });
-    if (selectedPath && typeof selectedPath === 'string') {
+    if (selectedPath && typeof selectedPath === "string") {
       return {
         type: "file",
         name: getNameFromPath(selectedPath),
         path: selectedPath,
-        children: []
+        children: [],
       };
     }
     return undefined;
@@ -123,7 +126,7 @@ export const TauriAPI: IPlatformAPI = {
 
   async createDir(path: string): Promise<boolean> {
     try {
-      await createDir(path, { recursive: true });
+      await mkdir(path, { recursive: true });
       return true;
     } catch (error) {
       console.error(error);
@@ -154,7 +157,7 @@ export const TauriAPI: IPlatformAPI = {
 
   async renameFile(oldPath: string, newPath: string): Promise<boolean> {
     try {
-      await renameFile(oldPath, newPath);
+      await rename(oldPath, newPath);
       return true;
     } catch (err) {
       console.error(err);
@@ -164,7 +167,7 @@ export const TauriAPI: IPlatformAPI = {
 
   async deleteDir(path: string): Promise<boolean> {
     try {
-      await removeDir(path, { recursive: true });
+      await remove(path, { recursive: true });
       return true;
     } catch (error) {
       console.error(error);
@@ -174,7 +177,7 @@ export const TauriAPI: IPlatformAPI = {
 
   async deleteFile(path: string): Promise<boolean> {
     try {
-      await removeFile(path);
+      await remove(path);
       return true;
     } catch (error) {
       console.error(error);
@@ -188,12 +191,14 @@ export const TauriAPI: IPlatformAPI = {
 
   async showSaveDialog(): Promise<string | undefined> {
     const selectedPath = await save({
-      filters: [{
-        name: 'Markdown Document',
-        extensions: ['md', 'markdown'],
-      }]
+      filters: [
+        {
+          name: "Markdown Document",
+          extensions: ["md", "markdown"],
+        },
+      ],
     });
-    if (selectedPath && typeof selectedPath === 'string') {
+    if (selectedPath && typeof selectedPath === "string") {
       return selectedPath;
     }
     return undefined;
@@ -212,7 +217,7 @@ export const TauriAPI: IPlatformAPI = {
     close: function (): void {
       appWindow.close();
     },
-    
+
     minimize: function (): void {
       appWindow.minimize();
     },
@@ -228,7 +233,7 @@ export const TauriAPI: IPlatformAPI = {
           event.preventDefault();
         }
       });
-    }
+    },
   },
 
   openInBrowser: async function (url: string): Promise<void> {
@@ -238,15 +243,14 @@ export const TauriAPI: IPlatformAPI = {
   locateFile: function (filePath: string): void {
     console.log("locateFile in sys:", filePath);
     // FIXME Only works for Windows
-    const command = new Command("locate-file-win", ["/select", filePath]);
+    const command = Command.create("locate-file-win", ["/select", filePath]);
     command.execute();
   },
 
   locateFolder: function (folderPath: string): void {
     console.log("locateFolder in sys:", folderPath);
     // FIXME Only works for Windows
-    const command = new Command("locate-folder-win", ["/root", folderPath]);
+    const command = Command.create("locate-folder-win", ["/root", folderPath]);
     command.execute();
   },
-
-}
+};

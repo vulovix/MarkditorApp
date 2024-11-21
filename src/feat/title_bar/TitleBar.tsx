@@ -1,61 +1,63 @@
-import { Button, Flex, IconButton, Tooltip } from "@radix-ui/themes"
-import styles from "./TitleBar.module.css"
-import useDocumentStore, { saveDocument } from "@/store/document"
-import { Maximize, Minimize, Minus, MinusIcon, Square, X } from "lucide-react"
-import { useEffect, useState } from "react"
-import { TitleBarMenuItems } from "./menu_items"
-import { Square2StackIcon } from "@heroicons/react/24/outline"
-import { PlatformAPI } from "@/ipc"
-import { WindowActionButton } from "./WindowActionButton"
-import { cn } from "@/utils/styles"
-import { dialogActions } from "@/store/dialog"
+import { Button, Flex, IconButton, Tooltip } from "@radix-ui/themes";
+import styles from "./TitleBar.module.css";
+import useDocumentStore, { saveDocument } from "@/store/document";
+import { Maximize, Minimize, Minus, MinusIcon, Square, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { TitleBarMenuItems } from "./menu_items";
+import { Square2StackIcon } from "@heroicons/react/24/outline";
+import { PlatformAPI } from "@/ipc";
+import { WindowActionButton } from "./WindowActionButton";
+import { cn } from "@/utils/styles";
+import { dialogActions } from "@/store/dialog";
 
-function TitleSection({ className, title }: { className: string, title: string }) {
+function TitleSection({ className, title }: { className: string; title: string }) {
   return (
-    <div data-tauri-drag-region className={className + " mx-3 my-1 text-center text-ellipsis line-clamp-1"}>
+    <div data-tauri-drag-region className={className + " mx-3 my-1 text-center text-ellipsis self-center line-clamp-1 font-bold text-xs"}>
       {title}
     </div>
-  )
+  );
 }
 
 export function WindowTitleBar() {
-  const shouldAlertSave = useDocumentStore((state) => state.shouldAlertSave())
-  const docTitle = useDocumentStore((state) => state.fileName ?? "")
-  const docSaved = useDocumentStore((state) => state.saved)
+  const shouldAlertSave = useDocumentStore((state) => state.shouldAlertSave());
+  const docTitle = useDocumentStore((state) => state.fileName ?? "");
+  const docSaved = useDocumentStore((state) => state.saved);
 
-  let windowTitle = shouldAlertSave ? docTitle + "*" : docTitle
+  let windowTitle = shouldAlertSave ? docTitle + "*" : docTitle;
 
-  const iconSize = 17
-  const [maximized, setMaximized] = useState(false)
+  const iconSize = 17;
+  const [maximized, setMaximized] = useState(false);
 
   useEffect(() => {
-    const unlisten = PlatformAPI.win.onWillClose(willCloseWindow)
+    const unlisten = PlatformAPI.win.onWillClose(willCloseWindow);
     // FIXME Listen for window maximize/restore events
     // const removeListener = window.__ElectronAPI__.onMaximizedChanged((v) => {
     //   setMaximized(v)
     // })
-    return () => { unlisten.then((f) => f()) }
-  }, [shouldAlertSave])
+    return () => {
+      unlisten.then((f) => f());
+    };
+  }, [shouldAlertSave]);
 
   function minimizeWindow() {
-    PlatformAPI.win.minimize()
+    PlatformAPI.win.minimize();
   }
 
   function maximizeWindow() {
-    PlatformAPI.win.toggleMaximize()
+    PlatformAPI.win.toggleMaximize();
   }
 
   function closeWindow() {
-    PlatformAPI.win.close()
+    PlatformAPI.win.close();
   }
 
   async function willCloseWindow(): Promise<boolean> {
     if (shouldAlertSave) {
-      dialogActions.showUnsaveAlertIfNeeded({ doNext: closeWindow })
-      return false
+      dialogActions.showUnsaveAlertIfNeeded({ doNext: closeWindow });
+      return false;
     } else {
-      closeWindow()
-      return true
+      closeWindow();
+      return true;
     }
   }
 
@@ -73,9 +75,7 @@ export function WindowTitleBar() {
         </WindowActionButton>
 
         <WindowActionButton onClick={maximizeWindow}>
-          {maximized
-            ? <Square2StackIcon className="rotate-90" strokeWidth={1.8} width={iconSize} />
-            : <Square size={iconSize - 1} />}
+          {maximized ? <Square2StackIcon className="rotate-90" strokeWidth={1.8} width={iconSize} /> : <Square size={iconSize - 1} />}
         </WindowActionButton>
 
         <WindowActionButton isDanger onClick={willCloseWindow}>
@@ -83,5 +83,5 @@ export function WindowTitleBar() {
         </WindowActionButton>
       </Flex>
     </div>
-  )
+  );
 }

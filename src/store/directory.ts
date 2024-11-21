@@ -1,211 +1,209 @@
-import { PlatformAPI } from "@/ipc"
-import { create } from "zustand"
-import { closeCurrentDoc, closeDocIfNotExist, setDocument } from "./document"
-import { findTargetDirRecursive, getDirectoryFromPath, getNameFromPath, getParentDirectory, isMarkdownFile } from "@/utils/path"
-import useNavigationStore, { toggleSidebarExpanded } from "./navigation"
+import { PlatformAPI } from "@/ipc";
+import { create } from "zustand";
+import { closeCurrentDoc, closeDocIfNotExist, setDocument } from "./document";
+import { findTargetDirRecursive, getDirectoryFromPath, getNameFromPath, getParentDirectory, isMarkdownFile } from "@/utils/path";
+import useNavigationStore, { toggleSidebarExpanded } from "./navigation";
 
 interface DirectoryState {
-  root?: DirectoryEntity,
+  root?: DirectoryEntity;
 }
 
-const useDirectoryStore = create<DirectoryState>(
-  () => ({
-    root: undefined,
-  })
-)
+const useDirectoryStore = create<DirectoryState>(() => ({
+  root: undefined,
+}));
 
-const { setState, getState, subscribe } = useDirectoryStore
+const { setState, getState, subscribe } = useDirectoryStore;
 
 // -----------------------------------------
 
 export async function setRootDir(root: DirectoryEntity) {
-  if (root.path === getState().root?.path) return
+  if (root.path === getState().root?.path) return;
 
-  const children = (await PlatformAPI.listDirectories(root.path))
-  root.children = children
-  setState((state) => ({ ...state, root }))
+  const children = await PlatformAPI.listDirectories(root.path);
+  root.children = children;
+  setState((state) => ({ ...state, root }));
 }
 
 export async function setRootDirByPath(path: string) {
-  if (path === getState().root?.path) return
+  if (path === getState().root?.path) return;
 
-  const root = getDirectoryFromPath(path)
-  const children = (await PlatformAPI.listDirectories(root.path))
-  root.children = children
-  setState((state) => ({ ...state, root }))
-  toggleSidebarExpanded(true)
-  closeCurrentDoc()
+  const root = getDirectoryFromPath(path);
+  const children = await PlatformAPI.listDirectories(root.path);
+  root.children = children;
+  setState((state) => ({ ...state, root }));
+  toggleSidebarExpanded(true);
+  closeCurrentDoc();
 }
 
 export async function setFileByPath(path: string) {
   if (path !== undefined) {
-    const content = await PlatformAPI.readFile(path)
+    const content = await PlatformAPI.readFile(path);
     if (content === undefined) {
-      throw Error("setFileByPath: Failed to read file: " + path)
+      throw Error("setFileByPath: Failed to read file: " + path);
     }
-    setDocument(path, content)
-    setRootDir(getParentDirectory(path))
+    setDocument(path, content);
+    setRootDir(getParentDirectory(path));
   }
 }
 
 export async function selectRootDir() {
-  const root = (await PlatformAPI.selectDirectory())
+  const root = await PlatformAPI.selectDirectory();
+  console.log(root);
   if (root !== undefined) {
-    setState((state) => ({ ...state, root, children: root.children }))
+    setState((state) => ({ ...state, root, children: root.children }));
     console.log("selectRootDir", root);
-    closeCurrentDoc()
-    toggleSidebarExpanded(true)
+    closeCurrentDoc();
+    toggleSidebarExpanded(true);
   } else {
     console.error("selectRootDir:", "Failed to open root directory");
   }
 }
 
 export async function refreshRootDir() {
-  if (getState().root === undefined)
-    return
+  if (getState().root === undefined) return;
   // refresh children dir
-  const children = (await PlatformAPI.listDirectories(getState().root!.path))
+  const children = await PlatformAPI.listDirectories(getState().root!.path);
   const newRoot = {
-    ...getState().root!, children,
-  }
-  setState((state) => ({ ...state, root: newRoot }))
+    ...getState().root!,
+    children,
+  };
+  setState((state) => ({ ...state, root: newRoot }));
 }
 
 export async function selectFile() {
-  const file = await PlatformAPI.selectFile()
+  const file = await PlatformAPI.selectFile();
   if (file !== undefined) {
-    const content = await PlatformAPI.readFile(file.path)
+    const content = await PlatformAPI.readFile(file.path);
     if (content === undefined) {
-      throw Error("selectFile: Failed to read file: " + file.path)
+      throw Error("selectFile: Failed to read file: " + file.path);
     }
-    setDocument(file.path, content)
-    setRootDir(getParentDirectory(file.path))
+    setDocument(file.path, content);
+    setRootDir(getParentDirectory(file.path));
   }
 }
 
 export async function copyFileInPlace(path: string): Promise<string | undefined> {
-  const parent = getParentDirectory(path)
-  const cpoiedFile = `${getNameFromPath(path, false)} - copy.md`
-  const res = await PlatformAPI.copyFile(path, `${parent.path}/${cpoiedFile}`)
+  const parent = getParentDirectory(path);
+  const cpoiedFile = `${getNameFromPath(path, false)} - copy.md`;
+  const res = await PlatformAPI.copyFile(path, `${parent.path}/${cpoiedFile}`);
   if (res) {
-    refreshDirectory(getParentDirectory(path))
-    return cpoiedFile
+    refreshDirectory(getParentDirectory(path));
+    return cpoiedFile;
   }
-  return undefined
+  return undefined;
 }
-
-
 
 export async function openDirectory(path: string) {
   try {
     if (getState().root == undefined) {
       console.error("No root dir:", path);
-      return
+      return;
     }
 
-    const dirChildren = await PlatformAPI.listDirectories(path)
-    const rootChildren = getState().root?.children || []
-    const targetDir = findTargetDirRecursive(rootChildren, path)
+    const dirChildren = await PlatformAPI.listDirectories(path);
+    const rootChildren = getState().root?.children || [];
+    const targetDir = findTargetDirRecursive(rootChildren, path);
 
     if (!targetDir) {
       console.error("Cannot open dir:", path);
-      return
+      return;
     }
-    targetDir.children = dirChildren
+    targetDir.children = dirChildren;
 
     const newRoot: DirectoryEntity = {
       ...getState().root!,
       children: rootChildren,
-    }
+    };
 
-    setState((s) => ({ ...s, root: newRoot }))
+    setState((s) => ({ ...s, root: newRoot }));
   } catch (e) {
-    console.error('Error fetching directory', e);
+    console.error("Error fetching directory", e);
   }
 }
 
 export async function openFile(path: string) {
   if (!isMarkdownFile(path)) {
-    return
+    return;
   }
-  const content = await PlatformAPI.readFile(path)
+  const content = await PlatformAPI.readFile(path);
+  console.log(content);
   if (content === undefined) {
     console.error("Error when reading file via IPC:", path);
-    return
+    return;
   }
-  setDocument(path, content)
+  setDocument(path, content);
   // openDirectory(getParentDirectory(path).path)
 }
 
 export async function refreshDirectory(dir: DirectoryEntity) {
   if (dir.path === getState().root!.path) {
-    refreshRootDir()
+    refreshRootDir();
   } else {
-    openDirectory(dir.path)
+    openDirectory(dir.path);
   }
 }
 
 export async function createDirectory(base: DirectoryEntity, name: string): Promise<boolean> {
-  let target = base.path + "/" + name
-  const exist = await PlatformAPI.exists(target)
+  let target = base.path + "/" + name;
+  const exist = await PlatformAPI.exists(target);
   if (exist) {
     console.error("Directory or file already exists:", target);
-    return false
+    return false;
   }
-  const res = await PlatformAPI.createDir(target)
-  refreshDirectory(base)
-  return res
+  const res = await PlatformAPI.createDir(target);
+  refreshDirectory(base);
+  return res;
 }
 
 export async function createFile(base: DirectoryEntity, name: string): Promise<boolean> {
   if (!isMarkdownFile(name)) {
-    name += ".md"
+    name += ".md";
   }
-  let target = base.path + "/" + name
-  const exist = await PlatformAPI.exists(target)
+  let target = base.path + "/" + name;
+  const exist = await PlatformAPI.exists(target);
   if (exist) {
     console.error("Directory or file already exists:", target);
-    return false
+    return false;
   }
-  const res = await PlatformAPI.createFile(target)
-  refreshDirectory(base)
-  return res
+  const res = await PlatformAPI.createFile(target);
+  refreshDirectory(base);
+  return res;
 }
 
 export async function renameFile(entity: DirectoryEntity, newName: string) {
-  const parent = getParentDirectory(entity.path)
-  const res = await PlatformAPI.renameFile(entity.path, parent.path + "/" + newName)
+  const parent = getParentDirectory(entity.path);
+  const res = await PlatformAPI.renameFile(entity.path, parent.path + "/" + newName);
   if (res) {
-    refreshDirectory(parent)
+    refreshDirectory(parent);
   }
-  return res
+  return res;
 }
 
 export async function renameDirectory(entity: DirectoryEntity, newName: string) {
-  const parent = getParentDirectory(entity.path)
-  const res = await PlatformAPI.renameDir(entity.path, parent.path + "/" + newName)
+  const parent = getParentDirectory(entity.path);
+  const res = await PlatformAPI.renameDir(entity.path, parent.path + "/" + newName);
   if (res) {
-    refreshDirectory(parent)
+    refreshDirectory(parent);
   }
-  return res
+  return res;
 }
 
 export async function deleteDirectory(entity: DirectoryEntity) {
-  const res = await PlatformAPI.deleteDir(entity.path)
+  const res = await PlatformAPI.deleteDir(entity.path);
   if (res) {
-    refreshDirectory(getParentDirectory(entity.path))
-    closeDocIfNotExist()
+    refreshDirectory(getParentDirectory(entity.path));
+    closeDocIfNotExist();
   }
-  return res
+  return res;
 }
 
 export async function deleteFile(entity: DirectoryEntity) {
-  const res = await PlatformAPI.deleteFile(entity.path)
+  const res = await PlatformAPI.deleteFile(entity.path);
   if (res) {
-    refreshDirectory(getParentDirectory(entity.path))
-    closeDocIfNotExist()
+    refreshDirectory(getParentDirectory(entity.path));
+    closeDocIfNotExist();
   }
-  return res
+  return res;
 }
 
-export default useDirectoryStore
+export default useDirectoryStore;

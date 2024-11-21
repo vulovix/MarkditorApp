@@ -11,115 +11,112 @@ import { dialogActions } from "@/store/dialog";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 
-const iconSize = 16
+const iconSize = 16;
 
 function ToggleFolderView() {
   const open = useNavigationStore((state) => state.sidebarExpanded);
-  let icon
+  let icon;
   if (open) {
-    icon = <SidebarClose size={iconSize} />
+    icon = <SidebarClose size={iconSize} />;
   } else {
-    icon = <SidebarOpen size={iconSize} />
+    icon = <SidebarOpen size={iconSize} />;
   }
 
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   const props: TitleMenuItemProps = {
     icon: icon,
     label: t("titlebar_menu.sidebar"),
     onClick: () => {
-      toggleSidebarExpanded()
+      toggleSidebarExpanded();
     },
     isDisabled: false,
-  }
+  };
 
-  return <TitleMenuItem props={props} />
+  return <TitleMenuItem props={props} />;
 }
-
 
 function Save() {
   const saved = useDocumentStore((state) => state.saved);
-  const icon = <SaveIcon size={iconSize} />
+  const icon = <SaveIcon size={iconSize} />;
   const props: TitleMenuItemProps = {
     icon: icon,
     label: t("titlebar_menu.save"),
     onClick: async () => {
-      const res = await saveDocument()
+      const res = await saveDocument();
       if (res) {
-        toast.success(t("toast.save_success"))
+        toast.success(t("toast.save_success"));
       } else {
-        toast.error(t("toast.save_fail"))
+        toast.error(t("toast.save_fail"));
       }
     },
     isDisabled: saved,
-  }
-  return <TitleMenuItem props={props} />
+  };
+  return <TitleMenuItem props={props} />;
 }
 
 const NewFile = () => {
-  const saved = useDocumentStore((state) => (state.saved));
+  const saved = useDocumentStore((state) => state.saved);
   const props: TitleMenuItemProps = {
     icon: <PlusCircleIcon size={iconSize} />,
     label: t("titlebar_menu.new_file"),
     onClick: () => {
       dialogActions.showUnsaveAlertIfNeeded({
-        doNext: createNewDoc
-      })
+        doNext: createNewDoc,
+      });
     },
     isDisabled: false,
-  }
+  };
 
   if (saved) {
-    return <TitleMenuItem props={props} />
+    return <TitleMenuItem props={props} />;
   }
 
-  return <TitleMenuItem props={props} />
-
-}
+  return <TitleMenuItem props={props} />;
+};
 
 function ShowSearch() {
   const props: TitleMenuItemProps = {
     icon: <Search size={iconSize} />,
     label: t("titlebar_menu.search"),
-    onClick: () => { },
+    onClick: () => {},
     isDisabled: false,
-  }
-  return <TitleMenuItem props={props} />
-
+  };
+  return <TitleMenuItem props={props} />;
 }
 
 function OpenDevTool() {
   if (EnvConstants.isTauri) {
-    return <></>
+    return <></>;
   }
   const openDevToolMenuItem: TitleMenuItemProps = {
     icon: <TerminalSquare size={iconSize} />,
     label: t("titlebar_menu.devtools"),
     onClick: () => PlatformAPI.openDevTools(),
     isDisabled: false,
-  }
-  return <TitleMenuItem props={openDevToolMenuItem} />
+  };
+  return <TitleMenuItem props={openDevToolMenuItem} />;
 }
 
 function ToggleThemeMode() {
-  const themeMode = usePreferenceStore(s => s.themeMode())
+  const themeMode = usePreferenceStore((s) => s.themeMode());
   const menuItem: TitleMenuItemProps = {
     icon: themeMode === "light" ? <Sun size={iconSize} /> : <MoonIcon size={iconSize} />,
     label: t("titlebar_menu.theme_mode"),
     onClick: () => {
-      prefActions.setThemeMode(themeMode === "light" ? "dark" : "light")
+      prefActions.setThemeMode(themeMode === "light" ? "dark" : "light");
     },
     isDisabled: false,
-  }
-  return <TitleMenuItem props={menuItem} />
+  };
+  return <TitleMenuItem props={menuItem} />;
 }
 
 function MoreMenuItem() {
   const moreMenuItem: TitleMenuItemProps = {
     icon: <MoreHorizontal size={iconSize} />,
-    label: t("titlebar_menu.more")
-  }
-  return <TitleMenuItem props={moreMenuItem} />
+    label: t("titlebar_menu.more"),
+  };
+  return <TitleMenuItem props={moreMenuItem} />;
 }
 
 export const TitleBarMenuItems = () => (
@@ -133,4 +130,4 @@ export const TitleBarMenuItems = () => (
       <MoreMenuItem />
     </TitleBarDropdownMenus>
   </>
-)
+);

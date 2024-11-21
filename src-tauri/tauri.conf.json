@@ -1,15 +1,15 @@
 {
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "markeditor-app-3",
+  "version": "0.1.0",
+  "identifier": "Me.GreyApps.Markditor",
   "build": {
     "beforeBuildCommand": "npm run build:before_tauri",
     "beforeDevCommand": "npm run dev:before_tauri",
-    "devPath": "http://localhost:5173",
-    "distDir": "../dist"
+    "devUrl": "http://localhost:5173/",
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "Markditor",
-    "version": "1.0.0"
-  },
-  "tauri": {
+  "plugins": {
     "allowlist": {
       "all": true,
       "dialog": {
@@ -26,18 +26,11 @@
       "protocol": {
         "all": true,
         "asset": true,
-        "assetScope": [
-          "**/*",
-          "**\\*",
-          "*:\\**\\*",
-          "*:/**/*"
-        ]
+        "assetScope": ["**/*", "**\\*", "*:\\**\\*", "*:/**/*"]
       },
       "fs": {
         "all": true,
-        "scope": [
-          "**/*"
-        ],
+        "scope": ["**/*"],
         "readFile": true,
         "writeFile": true,
         "readDir": true,
@@ -103,6 +96,9 @@
         ]
       }
     },
+    "updater": {
+      "active": false
+    },
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
@@ -111,13 +107,7 @@
         "depends": []
       },
       "externalBin": [],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/256x256.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
+      "icon": ["icons/32x32.png", "icons/128x128.png", "icons/256x256.png", "icons/icon.icns", "icons/icon.ico"],
       "identifier": "Me.GreyApps.Markditor",
       "longDescription": "",
       "macOS": {
@@ -135,31 +125,11 @@
         "digestAlgorithm": "sha256",
         "timestampUrl": "",
         "wix": {
-          "fragmentPaths": [
-            "config\\wix-config.wxs"
-          ],
-          "componentRefs": [
-            "Entries1",
-            "Entries2",
-            "Entries3"
-          ]
+          "fragmentPaths": ["config\\wix-config.wxs"],
+          "componentRefs": ["Entries1", "Entries2", "Entries3"]
         }
       }
     },
-    "updater": {
-      "active": false
-    },
-    "windows": [
-      {
-        "label": "main",
-        "fullscreen": false,
-        "decorations": false,
-        "height": 600,
-        "resizable": true,
-        "title": "Markditor",
-        "width": 1000
-      }
-    ],
     "cli": {
       "description": "Markditor CLI",
       "longDescription": "Markditor App CLI.",
@@ -173,5 +143,18 @@
         }
       ]
     }
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "fullscreen": false,
+        "decorations": false,
+        "height": 600,
+        "resizable": true,
+        "title": "Markditor",
+        "width": 1000
+      }
+    ]
   }
 }

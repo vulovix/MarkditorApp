@@ -7,7 +7,7 @@ export function UnsaveAlertDialog() {
   const visible = useDialogStore((state) => state.unsaveAlert.visible);
   const doNext = useDialogStore((state) => state.unsaveAlert.doNext);
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   function cancel() {
     dialogActions.hideUnsaveAlert();
@@ -15,9 +15,9 @@ export function UnsaveAlertDialog() {
 
   async function handleDoNext(save: boolean) {
     if (save) {
-      await saveDocument()
+      await saveDocument();
     }
-    doNext?.()
+    doNext?.();
     dialogActions.hideUnsaveAlert();
   }
 
